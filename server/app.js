@@ -1,3 +1,4 @@
+const ts = new Date();
 const fs = require('fs');
 const open = require('open');
 const cors = require('cors');
@@ -91,7 +92,7 @@ https.createServer({
 }, app)
     .listen(port, function () {
         console.clear();
-        console.log(`APP listening on port ${port}! Go to https://localhost:${port}/`)
+        console.log(`${ts.toLocaleString()} - App listening on port ${port}! Go to https://localhost:${port}/v1/swagger`)
         // open(`https://localhost:${port}/v1/swagger`, {app: 'firefox'});
     })
 deleteExpired(3600000);

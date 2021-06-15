@@ -2,8 +2,7 @@ const router = require('express').Router();
 const {searchAnime, getAnimeInfos, getEpisodeInfos} = require("../functions/anime")
 const browserObject = require('../functions/scrapper/browser');
 const scraperController = require('../functions/scrapper/pageController');
-const verify = require('./middlewares/verifyToken');
-
+const malScraper = require('mal-scraper')
 // Extend : https://www.npmjs.com/package/anime-scraper
 
 /*
@@ -35,12 +34,25 @@ const verify = require('./middlewares/verifyToken');
  *           description: Internal servor error
  */
 router.get('/search/:name',async (req, res) => {
-    // if (!req.headers.authorization) return res.status(401).send("Unauthorized")
     if (!req.params.name) return res.status(400).send("No name given.")
     await searchAnime(req.params.name)
-        .then(value => {
-            res.status(200).send(value);
+        .then(async value => {
+            const animeSearchArray = [];
+            for (const anime of value) {
+                const pictures = await malScraper.getPictures(anime.name);
+                const newAnime = {
+                    id: anime.id,
+                    name: anime.name,
+                    url: anime.url,
+                    date: anime.date,
+                    episodesNumber: anime.episodesNumber,
+                    picture: pictures[pictures.length-1]
+                }
+                animeSearchArray.push(newAnime);
+            }
+            res.status(200).send(animeSearchArray);
         }).catch(error => {
+            console.log(error)
             res.status(500).send(error.message);
         })
 })
@@ -121,14 +133,33 @@ router.get('/:name/:episode', async (req, res) => {
  *           description: Internal servor error
  */
 router.post('/:url',async (req, res) => {
-    // if (!req.headers.authorization) return res.status(401).send("Unauthorized")
     if (!req.body.url) return res.status(400).send("No URL given.")
     await getAnimeInfos(req.body.url)
-        .then(value => {
-            if (!value){
+        .then(async value => {
+            if (!value) {
                 res.status(204).send(value);
-            }else{
-                res.status(200).send(value);
+            } else {
+                const infos = await malScraper.getInfoFromName(value.name);
+                const animeInfos = {
+                    id : value.id,
+                    name: value.name,
+                    score: infos.score,
+                    releaseDate: value.releaseDate,
+                    status: infos.status,
+                    synopsis: infos.synopsis,
+                    genres: value.genres,
+                    picture: infos.picture,
+                    trailer: infos.trailer,
+                    episodesNumber: value.numberEpisode,
+                    episodeDuration: infos.duration,
+                    characters : infos.characters,
+                    staff: infos.staff,
+                    diffusionType: infos.type,
+                    broadcastTime: infos.broadcast,
+                    producers: infos.producers,
+                    studios: infos.studios,
+                }
+                res.status(200).send(animeInfos);
             }
         }).catch(error => {
             res.status(500).send(error.message);

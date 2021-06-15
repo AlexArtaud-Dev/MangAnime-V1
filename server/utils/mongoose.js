@@ -17,6 +17,8 @@ module.exports = {
 
         mongoose.connect(process.env.DB_CONNECTION, mongOptions);
         mongoose.Promise = global.Promise;
-        mongoose.connection.on("connected", () => console.log(ts.toLocaleString() + " - Connected to Mongo Cluster"));
+        mongoose.connection.on("connected", () => {
+            console.log(ts.toLocaleString() + " - Connected to Mongo Cluster (" + mongoose.connection.host + ")");
+        });
     }
 }
