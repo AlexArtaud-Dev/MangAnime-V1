@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const browserObject = require('../functions/scrapper/browser');
 const scraperController = require('../functions/scrapper/pageController');
-
+const verify = require('./middlewares/verifyToken');
+const verifyAdmin = require('./middlewares/verifyAdminToken');
 
 
 /**
@@ -11,6 +12,8 @@ const scraperController = require('../functions/scrapper/pageController');
  *      description: Start scrapper script
  *      tags:
  *          - Scrapper
+ *      security:
+ *          - Bearer: []
  *      parameters:
  *          - in: body
  *            name: URL
@@ -31,7 +34,7 @@ const scraperController = require('../functions/scrapper/pageController');
  *         '500':
  *           description: Internal servor error
  */
-router.post('/run',async (req, res) => {
+router.post('/run', verify, verifyAdmin, async (req, res) => {
     if (!req.body.url) return res.status(400).send("URL is missing.")
     let browserInstance = browserObject.startBrowser();
     await scraperController(browserInstance, req.body.url)
