@@ -1,3 +1,4 @@
+// Extend : https://www.npmjs.com/package/anime-scraper
 const Anime = require('anime-scraper').Anime
 
 
@@ -23,9 +24,8 @@ async function searchAnime(name, offset = 100, startfrom = 1) {
     return treatedAnimeArray;
 }
 async function getAnimeInfos(url){
-    console.log(!url.includes("https://ww1.gogoanime.io/category/"));
-    console.log(!url.includes("https://www1.gogoanime.ai/category/"));
-    if (!url.includes("https://ww1.gogoanime.io/category/") && !url.includes("https://www1.gogoanime.ai/category/")) {
+    if (!url.includes("https://ww1.gogoanime.io/category/") && !url.includes("https://www1.gogoanime.ai/category/") && !url.includes('https://gogoanime.io/category/')){
+        console.log(url);
          throw new Error("Bad URL format!")
     }
     const data = await Anime.fromUrl(url)
@@ -38,6 +38,10 @@ async function getAnimeInfos(url){
         numberEpisode: data.episodes.length !== undefined ? data.episodes.length : 0
     }
 }
+async function getAnimeByName(name){
+    const anime = await Anime.search(name);
+    return anime[0];
+}
 async function getEpisodeInfos(name, episode){
     const anime = await Anime.fromName(name);
     return await anime.episodes[episode].fetch();
@@ -46,5 +50,6 @@ async function getEpisodeInfos(name, episode){
 module.exports = {
     searchAnime,
     getAnimeInfos,
-    getEpisodeInfos
+    getEpisodeInfos,
+    getAnimeByName
 }
