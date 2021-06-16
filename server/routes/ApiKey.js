@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const mongoose = require('mongoose');
 require('dotenv').config();
 const verify = require('./middlewares/verifyToken');
 const verifyAdmin = require('./middlewares/verifyAdminToken');

@@ -1,9 +1,11 @@
 const router = require('express').Router();
-const {searchAnime, getAnimeInfos, getAnimeByName, getEpisodeInfos} = require("../functions/anime")
+const {searchAnime, getAnimeInfos, getAnimeByName, getEpisodeInfos, upAnime, deleteAnimeFromDB} = require("../functions/anime")
 const browserObject = require('../functions/scrapper/browser');
 const scraperController = require('../functions/scrapper/pageController');
 const malScraper = require('mal-scraper')
-
+const verify = require('./middlewares/verifyToken');
+const verifyAdmin = require('./middlewares/verifyAdminToken');
+const Anime = require("anime-scraper").Anime;
 
 
 /**
@@ -13,6 +15,8 @@ const malScraper = require('mal-scraper')
  *      description: Use search animes corresponding to search query
  *      tags:
  *          - Anime
+ *      security:
+ *          - Bearer: []
  *      parameters:
  *          - in: path
  *            name: name
@@ -29,7 +33,7 @@ const malScraper = require('mal-scraper')
  *         '500':
  *           description: Internal servor error
  */
-router.get('/search/:name',async (req, res) => {
+router.get('/search/:name', verify, async (req, res) => {
     if (!req.params.name) return res.status(400).send("No name given.")
     await searchAnime(req.params.name)
         .then(async value => {
@@ -57,9 +61,11 @@ router.get('/search/:name',async (req, res) => {
  * @swagger
  * /anime/{name}:
  *   get:
- *      description: Use to get all information about an anime episode
+ *      description: Use to get all information about an anime
  *      tags:
  *          - Anime
+ *      security:
+ *          - Bearer: []
  *      parameters:
  *          - in: path
  *            name: name
@@ -76,7 +82,7 @@ router.get('/search/:name',async (req, res) => {
  *         '500':
  *           description: Internal servor error
  */
-router.get('/:name', async (req, res) => {
+router.get('/:name', verify, async (req, res) => {
     if (!req.params.name) return res.status(400).send("Missing anime name.");
     await getAnimeByName(req.params.name).then(async anime => {
         if (!anime) {
@@ -88,9 +94,11 @@ router.get('/:name', async (req, res) => {
                         res.status(204).send(value);
                     } else {
                         const infos = await malScraper.getInfoFromName(value.name);
+                        const url = await Anime.search(value.name);
                         const animeInfos = {
                             id : value.id,
                             name: value.name,
+                            url : url[0].url,
                             score: infos.score,
                             releaseDate: value.releaseDate,
                             status: infos.status,
@@ -116,7 +124,6 @@ router.get('/:name', async (req, res) => {
     })
 })
 
-
 /**
  * @swagger
  * /anime/{name}/{episode}:
@@ -124,6 +131,8 @@ router.get('/:name', async (req, res) => {
  *      description: Use to get all information about an anime episode
  *      tags:
  *          - Anime
+ *      security:
+ *          - Bearer: []
  *      parameters:
  *          - in: path
  *            name: name
@@ -147,7 +156,7 @@ router.get('/:name', async (req, res) => {
  *         '500':
  *           description: Internal servor error
  */
-router.get('/:name/:episode', async (req, res) => {
+router.get('/:name/:episode', verify, async (req, res) => {
     if (!req.params.name) return res.status(400).send("Missing anime name.");
     if (!req.params.episode) return res.status(400).send("Missing anime episode.");
     if (isNaN(req.params.episode)) return res.status(415).send("Episode must be type of integer.");
@@ -181,6 +190,8 @@ router.get('/:name/:episode', async (req, res) => {
  *      description: Use to get informations about an anime with his URL
  *      tags:
  *          - Anime
+ *      security:
+ *          - Bearer: []
  *      parameters:
  *          - in: body
  *            name: URL
@@ -201,7 +212,7 @@ router.get('/:name/:episode', async (req, res) => {
  *         '500':
  *           description: Internal servor error
  */
-router.post('/:url',async (req, res) => {
+router.post('/:url', verify, async (req, res) => {
     if (!req.body.url) return res.status(400).send("No URL given.")
     await getAnimeInfos(req.body.url)
         .then(async value => {
@@ -235,5 +246,81 @@ router.post('/:url',async (req, res) => {
         })
 })
 
+/**
+ * @swagger
+ * /anime/up:
+ *   patch:
+ *      description: Use to increment the fame of an anime
+ *      tags:
+ *          - Anime
+ *      security:
+ *          - Bearer: []
+ *      parameters:
+ *          - in: body
+ *            name: Anime
+ *            schema:
+ *              type: object
+ *              required:
+ *                 - name
+ *                 - url
+ *              properties:
+ *                 name:
+ *                   type: string
+ *                 url:
+ *                   type: string
+ *      responses:
+ *         '200':
+ *           description: Successfull Request
+ *         '401':
+ *           description: Unauthorized
+ *         '500':
+ *           description: Internal servor error
+ */
+router.patch('/up', verify, async (req, res) => {
+    await upAnime(req.body.name, req.body.url, req.user._id)
+        .then(data => {
+            res.status(200).send(data.message)
+        })
+        .catch(error => {
+            res.status(500).send(error)
+    })
+})
+
+/**
+ * @swagger
+ * /anime/remove:
+ *   delete:
+ *      description: Use to delete an anime from database
+ *      tags:
+ *          - Anime
+ *      security:
+ *          - Bearer: []
+ *      parameters:
+ *          - in: body
+ *            name: Anime
+ *            schema:
+ *              type: object
+ *              required:
+ *                 - name
+ *              properties:
+ *                 name:
+ *                   type: string
+ *      responses:
+ *         '200':
+ *           description: Successfull Request
+ *         '401':
+ *           description: Unauthorized
+ *         '500':
+ *           description: Internal servor error
+ */
+router.delete('/remove', verify, verifyAdmin, async (req, res) => {
+    await deleteAnimeFromDB(req.body.name)
+        .then(data => {
+            res.status(200).send(data.message)
+        })
+        .catch(error => {
+            res.status(500).send(error)
+        })
+})
 
 module.exports = router;
