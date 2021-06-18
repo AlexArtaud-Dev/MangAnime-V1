@@ -5,15 +5,7 @@ const verifyAdmin = require('./middlewares/verifyAdminToken');
 const ApiKey = require('../models/ApiKey')
 const uuidAPIKey = require('uuid-apikey');
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////   API KEY    //////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                      Generate REGISTER API KEY                                      //
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * @swagger
  * /key/generate:
@@ -35,14 +27,11 @@ const uuidAPIKey = require('uuid-apikey');
  */
 router.post('/generate', verify, verifyAdmin, async(req, res) => {
     const APIKEY = uuidAPIKey.create();
-    const newKey = new ApiKey({ UUID: APIKEY.uuid });
+    const newKey = new ApiKey({ UUID: APIKEY.uuid, creatorID: req.user._id });
     await newKey.save();
     res.status(200).send({ APIKEY: APIKEY.apiKey });
 })
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                      GET INFO REGISTER API KEY                                      //
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * @swagger
  * /key/{key}:
@@ -70,7 +59,7 @@ router.post('/generate', verify, verifyAdmin, async(req, res) => {
  *         '500':
  *           description: Internal servor error (probably a conversion error)
  */
-router.get('/:key', verify, verifyAdmin, async(req, res) => {
+router.get('/:key', async(req, res) => {
     if (uuidAPIKey.isAPIKey(req.params.key) === false) return res.status(422).send({ error: "The format of the API KEY you wanted to check is incorrect" });
     const UUIDKEY = uuidAPIKey.toUUID(req.params.key);
     if (uuidAPIKey.isUUID(UUIDKEY) === false) return res.status(500).send({ error: "Internal Server Error (A problem happened during key conversion)" })
@@ -79,9 +68,6 @@ router.get('/:key', verify, verifyAdmin, async(req, res) => {
     res.status(200).send({ key: req.params.key, id: key._id, creationDate: key.creationDate, expirationDate: key.expirationDate })
 })
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                       DELETE REGISTER API KEY                                       //
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * @swagger
  * /key/{key}:

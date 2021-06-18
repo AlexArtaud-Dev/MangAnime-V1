@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const mongoose = require("mongoose")
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -7,15 +8,7 @@ const ApiKey = require('../models/ApiKey');
 const uuidAPIKey = require('uuid-apikey')
 const { loginValidation, registerValidation } = require('../utils/validation');
 const checkKey = require('../utils/axiosRequests/checkKey');
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////   Auth  API  //////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                Register a new user in the database                                  //
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * @swagger
  * /user/register:
@@ -55,13 +48,21 @@ const checkKey = require('../utils/axiosRequests/checkKey');
 router.post('/register', async(req, res) => {
     checkKey(req.body.key)
         .then(async(data) => {
-            if (data !== 200) return res.status(403).send({ error: "Bad Token" });
+            if (data !== 200) return res.status(403).send({ error: "Wrong Invitation Key." });
 
             const UUID = uuidAPIKey.toUUID(req.body.key);
             const key = await ApiKey.findOne({ UUID: UUID })
 
             if (!key) return res.status(500).send({ error: "Couldn't delete API Key after usage, contact the admin !" })
-
+            const keyOwner = await User.findOne({_id: mongoose.Types.ObjectId(key.creatorID)})
+            if (!keyOwner) {
+                key.delete();
+                return res.status(403).send({error: "User that generated the key does not exist anymore, so the key is invalid. Try again with another key."});
+            }
+            if (parseInt(keyOwner.authority.level) !== 10) {
+                key.delete();
+                return res.status(403).send({ error: "User that generated the key is not allowed to do it anymore, so the key is invalid. Try again with another key." })
+            }
             // Data Validation
             const { error } = registerValidation(req.body);
             if (error) return res.status(400).send({ Error: error.details[0].message });
@@ -91,9 +92,6 @@ router.post('/register', async(req, res) => {
 
 });
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                               Log In as a user to get Access Token                                  //
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * @swagger
  * /user/login:

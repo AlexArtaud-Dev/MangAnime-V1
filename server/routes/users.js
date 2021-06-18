@@ -3,18 +3,12 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const verify = require('./middlewares/verifyToken');
+const verifyAdmin = require('./middlewares/verifyAdminToken');
 const User = require('../models/User');
+const ApiKey = require('../models/ApiKey')
 const { userUpdateValidation } = require('../utils/validation');
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////// USER API PART //////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                             Get the user profile given the session                                  //
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * @swagger
  * /users/:
@@ -40,9 +34,6 @@ router.get('/', verify, async(req, res) => {
     res.status(200).send(user);
 })
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                    Get someone info by their ID with restriction (security)                         //
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * @swagger
  * /users/{id}:
@@ -80,9 +71,6 @@ router.get('/:id', verify, async(req, res) => {
     });
 })
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                          Set an users to admin if you have the admin token                          //
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * @swagger
  * /users/elevateToAdmin/{id}:
@@ -123,9 +111,6 @@ router.patch('/elevateToAdmin/:id', verify, async(req, res) => {
     res.status(200).send({ message: "Elevated" });
 })
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                        Update your account                                          //
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * @swagger
  * /users/:
@@ -162,7 +147,7 @@ router.patch('/elevateToAdmin/:id', verify, async(req, res) => {
  *           description: Internal servor error
  */
 router.patch('/', verify, async(req, res) => {
-    const userToUpdate = await User.findOne({ _id: req.user._id })
+    const userToUpdate = await User.findOne({ _id: mongoose.Types.ObjectId(req.user._id) })
     if (!userToUpdate) return res.status(400).send({ message: "User to update does not exist" })
         // Check body parameters existence
     if (!req.body.nickname) { req.body.nickname = userToUpdate.nickname }
@@ -191,9 +176,6 @@ router.patch('/', verify, async(req, res) => {
     res.status(200).send({ message: "User Updated", updatedUser: userUpdated });
 })
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                 Delete the user given the session                                   //
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * @swagger
  * /users/:
@@ -214,12 +196,69 @@ router.patch('/', verify, async(req, res) => {
  *           description: Internal servor error
  */
 router.delete('/', verify, async(req, res) => {
-    const user = await User.findOne({ _id: req.user._id })
+    const user = await User.findOne({ _id: mongoose.Types.ObjectId(req.user._id) })
     if (!user) return res.status(400).send({ message: "The Token you used does not belong to an user" });
     user.delete();
     res.status(200).send({ message: "Deleted User!" })
 })
 
+/**
+ * @swagger
+ * /users/{id}:
+ *   delete:
+ *      description: Use to delete an account (leave empty the body if you don't want to delete an admin account / or you are not the owner)
+ *      tags:
+ *          - User
+ *      security:
+ *          - Bearer: []
+ *      parameters:
+ *          - in: path
+ *            name: id
+ *            schema:
+ *              type: integer
+ *            required: true
+ *          - in: body
+ *            name: Secret
+ *            schema:
+ *              type: object
+ *              required:
+ *                 - adminSecretPassword
+ *              properties:
+ *                 adminSecretPassword:
+ *                   type: string
+ *      responses:
+ *         '200':
+ *           description: Successfully Deleted
+ *         '400':
+ *           description: User does not exist
+ *         '401':
+ *           description: Unauthorized
+ *         '500':
+ *           description: Internal servor error
+ */
+router.delete('/:id', verify, verifyAdmin, async(req, res) => {
+    let user;
+    try {
+        user = await User.findOne({ _id: mongoose.Types.ObjectId(req.params.id)})
+    }catch (e) {
+        res.status(500).send(e.message)
+    }
 
+    if (!user) return res.status(400).send({ message: "The user does not exist" });
+    if (parseInt(user.authority.level) === 10){
+        if (!req.body.adminSecretPassword) return res.status(403).send("You can't delete an admin account without the owner secret pass")
+        if (req.body.adminSecretPassword !== process.env.OWNER_SECRET_PASS) return res.status(403).send("Wrong owner secret pass")
+        const APIKeys = await ApiKey.find({creatorID: req.params.id})
+        APIKeys.forEach(key => {
+            key.delete();
+        })
+        user.delete();
+        res.status(200).send({ message: "Deleted User!" })
+    }else{
+        user.delete();
+        res.status(200).send({ message: "Deleted User!" })
+    }
+
+})
 
 module.exports = router;

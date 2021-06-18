@@ -1,4 +1,3 @@
-const { required, boolean } = require('joi');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
@@ -17,6 +16,10 @@ const ApiKeySchema = new mongoose.Schema({
     expirationDate: {
         type: Date,
         default: (Date.now() + 86400000 * 7),
+        required: true
+    },
+    creatorID: {
+        type: String,
         required: true
     }
 });
