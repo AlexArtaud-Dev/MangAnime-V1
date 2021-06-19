@@ -12,53 +12,9 @@ const swaggerUI = require("swagger-ui-express")
 const deleteExpired = require('./utils/expiredDeletion');
 const serverKey = fs.readFileSync("./SSL_Cert/server.key")
 const serverCert = fs.readFileSync("./SSL_Cert/server.cert")
-
+const swaggerOptions = require("./utils/swaggerOptions")
 // Connect to DB
 db.init();
-
-
-// Extended : https://swagger.io/specification/#infoObject
-const swaggerOptions = {
-    swaggerDefinition: {
-        info: {
-            title: "Manga Web Scrapper API",
-            contact : {
-                name: "AlexArtaud-Dev"
-            },
-            version: "1.1.0",
-            servers: ["https://localhost:5000"]
-        },
-        basePath: "/api",
-        paths : {},
-        securityDefinitions: {
-            Bearer: {
-                in: "header",
-                name: "auth-token",
-                description: "",
-                required: true,
-                type: "apiKey",
-            }
-        },
-        tags: [
-            {
-                name: "Anime"
-            },
-            {
-                name: "Auth"
-            },
-            {
-                name: "Key"
-            },
-            {
-                name: "Scrapper"
-            },
-            {
-                name: "User"
-            }
-        ],
-},
-    apis: ["app.js", './routes/*.js']
-};
 
 // Swagger Docs Route and Options
 const swaggerDocs = swaggerJsDoc(swaggerOptions);

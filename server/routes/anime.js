@@ -3,8 +3,10 @@ const {searchAnime, getAnimeInfos, getAnimeByName, getEpisodeInfos, upAnime, del
 const browserObject = require('../functions/scrapper/browser');
 const scraperController = require('../functions/scrapper/pageController');
 const malScraper = require('mal-scraper')
+const User = require('../models/User');
 const verify = require('./middlewares/verifyToken');
 const verifyAdmin = require('./middlewares/verifyAdminToken');
+const mongoose = require("mongoose");
 const Anime = require("anime-scraper").Anime;
 
 
@@ -115,6 +117,15 @@ router.get('/:name', verify, async (req, res) => {
                             producers: infos.producers,
                             studios: infos.studios,
                         }
+                        const user = await User.findOne({_id : mongoose.Types.ObjectId(req.user._id)})
+                        user.watchedAnimes.push({
+                            id : value.id,
+                            name: value.name,
+                            url : url[0].url,
+                            picture: infos.picture,
+                            watchedEpisodes : []
+                        })
+                        await user.save();
                         res.status(200).send(animeInfos);
                     }
                 }).catch(error => {
@@ -160,13 +171,40 @@ router.get('/:name/:episode', verify, async (req, res) => {
     if (!req.params.name) return res.status(400).send("Missing anime name.");
     if (!req.params.episode) return res.status(400).send("Missing anime episode.");
     if (isNaN(req.params.episode)) return res.status(415).send("Episode must be type of integer.");
+    if (req.params.episode <= 0) return res.status(415).send("Episode must be superior to 0.");
     try{
-        await getEpisodeInfos(req.params.name, parseInt(req.params.episode)).then(async episode => {
+        await getEpisodeInfos(req.params.name, parseInt(req.params.episode)-1).then(async episode => {
             if (!episode) {
                 res.status(404).send("Episode not found.")
             } else {
                 let browserInstance = browserObject.startBrowser();
                 episode.videoLinks = await scraperController(browserInstance, episode.url);
+                const user = await User.findOne({_id: mongoose.Types.ObjectId(req.user._id)})
+                let anime, index;
+                for (let i = 0; i < user.watchedAnimes.length; i++) {
+                    if (user.watchedAnimes[i].name === req.params.name){
+                        anime = user.watchedAnimes[i];
+                        index = i;
+                    }
+                }
+                if (anime){
+                    let newArray = [];
+                    Array.prototype.push.apply(newArray, user.watchedAnimes[index].watchedEpisodes);
+                    newArray.push(parseInt(req.params.episode))
+                    newArray.sort((a, b) => a - b);
+                    const newEpisode = {
+                        id : user.watchedAnimes[index].id,
+                        name: user.watchedAnimes[index].name,
+                        url : user.watchedAnimes[index].url,
+                        picture: user.watchedAnimes[index].picture,
+                        watchedEpisodes: newArray
+                    }
+                    user.watchedAnimes.pull(user.watchedAnimes[index]);
+                    user.watchedAnimes.push(newEpisode);
+
+
+                    user.save();
+                }
                 res.status(200).send(episode);
             }
         })
