@@ -1,11 +1,13 @@
 const router = require('express').Router();
 const mongoose = require("mongoose")
 require('dotenv').config();
+const qrcode = require("qrcode-generator")
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const ApiKey = require('../models/ApiKey');
 const uuidAPIKey = require('uuid-apikey')
+const verify = require('./middlewares/verifyToken');
 const { loginValidation, registerValidation } = require('../utils/validation');
 const checkKey = require('../utils/axiosRequests/checkKey');
 
@@ -114,7 +116,7 @@ router.post('/register', async(req, res) => {
  *                   type: string
  *      responses:
  *         '200':
- *           description: Successfully Updated
+ *           description: Successfully Connected
  *         '400':
  *           description: Email or password does not exist
  *         '401':
@@ -138,11 +140,66 @@ router.post('/login', async(req, res) => {
     // Create and assign a token
 
     const token = jwt.sign({ _id: user.id }, process.env.TOKEN_SECRET);
-    res.send(token);
-
-
-
+    res.status(200).send(token);
 })
 
+/**
+ * @swagger
+ * /user/generate/qr:
+ *   get:
+ *      description: Allow connection using only token (with QR Code)
+ *      tags:
+ *          - Auth
+ *      security:
+ *          - Bearer: []
+ *      responses:
+ *         '200':
+ *           description: Successfully Generated
+ *         '401':
+ *           description: Unauthorized
+ *         '500':
+ *           description: Internal servor error
+ */
+router.get('/generate/qr', verify, async(req, res) => {
+    if (!req.header("auth-token")) return res.status(400).send("You need to pass an auth-token to generate a QR Code");
+
+    const typeNumber = 0;
+    const errorCorrectionLevel = 'H';
+    const qr = qrcode(typeNumber, errorCorrectionLevel);
+    qr.addData(`https://localhost:3000/qr/login/${req.header("auth-token")}`);
+    qr.make();
+    const QRCodeBase64 = qr.createImgTag();
+    res.status(200).send(QRCodeBase64.split("\"")[1]);
+})
+
+/**
+ * @swagger
+ * /user/login/qr:
+ *   post:
+ *      description: Allow connection using only token (with QR Code)
+ *      tags:
+ *          - Auth
+ *      security:
+ *          - Bearer: []
+ *      responses:
+ *         '200':
+ *           description: Successfully Connected
+ *         '400':
+ *           description: You need to pass an auth-token to login
+ *         '404':
+ *           description: The token is not correct
+ *         '500':
+ *           description: Internal servor error
+ */
+router.post('/login/qr', async(req, res) => {
+    if (!req.header("auth-token")) return res.status(400).send("You need to pass an auth-token to login");
+    const user = jwt.verify(req.header("auth-token"), process.env.TOKEN_SECRET);
+    if (!user) return res.status(500).send("A problem occured while decoding the token")
+    const dbUser = await User.findOne({ _id: user._id});
+    if (!dbUser) return res.status(404).send("Not user associated to this token found")
+
+    const token = jwt.sign({ _id: dbUser._id }, process.env.TOKEN_SECRET);
+    res.status(200).send(token);
+})
 
 module.exports = router;
