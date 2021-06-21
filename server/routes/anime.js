@@ -5,6 +5,7 @@ const scraperController = require('../functions/scrapper/pageController');
 const malScraper = require('mal-scraper')
 const User = require('../models/User');
 const SearchCache = require("../models/SearchCache");
+const AnimeInfos = require("../models/AnimeInfos");
 const verify = require('./middlewares/verifyToken');
 const verifyAdmin = require('./middlewares/verifyAdminToken');
 const mongoose = require("mongoose");
@@ -68,6 +69,50 @@ router.get('/search/:name', verify, async (req, res) => {
                 res.status(500).send(error.message);
             })
     }
+})
+
+/**
+ * @swagger
+ * /anime/popular/{limit}:
+ *   get:
+ *      description: Use to get popular anime on MangAnime
+ *      tags:
+ *          - Anime
+ *      security:
+ *          - Bearer: []
+ *      parameters:
+ *          - in: path
+ *            name: limit
+ *            schema:
+ *              type: string
+ *              required: true
+ *      responses:
+ *         '200':
+ *           description: Successfull Request
+ *         '400':
+ *           description: Missing limit parameter
+ *         '401':
+ *           description: Unauthorized
+ *         '404':
+ *           description: Nothing Found
+ *         '500':
+ *           description: Internal servor error
+ */
+router.get('/popular/:limit', verify, async (req, res) => {
+    if (!req.params.limit) return res.status(400).send("Missing limit parameter")
+    const topAnimes = await AnimeInfos.find().sort({fame: -1}).limit(parseInt(req.params.limit))
+    if (!topAnimes) return res.status(404).send("No Anime found from popular anime list")
+    const topAnimesArray = [];
+    topAnimes.forEach(anime => {
+        const object = {
+            name: anime.name,
+            url: anime.url,
+            image: anime.image,
+            fame: anime.fame
+        }
+        topAnimesArray.push(object);
+    })
+    res.status(200).send(topAnimesArray)
 })
 
 /**
@@ -227,8 +272,6 @@ router.get('/:name/:episode', verify, async (req, res) => {
         }
 
     }
-
-
 
 })
 
