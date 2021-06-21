@@ -9,6 +9,7 @@ const port = process.env.PORT || 5000;
 const db = require('./utils/mongoose');
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUI = require("swagger-ui-express")
+const deleteCache = require('./utils/expiredCache');
 const deleteExpired = require('./utils/expiredDeletion');
 const serverKey = fs.readFileSync("./SSL_Cert/server.key")
 const serverCert = fs.readFileSync("./SSL_Cert/server.cert")
@@ -51,4 +52,5 @@ https.createServer({
         console.log(`${ts.toLocaleString()} - App listening on port ${port}! Go to https://localhost:${port}/v1/swagger`)
         // open(`https://localhost:${port}/v1/swagger`, {app: 'firefox'});
     })
+deleteCache(3600000);
 deleteExpired(3600000);

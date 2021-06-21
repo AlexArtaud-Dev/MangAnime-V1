@@ -19,7 +19,7 @@ const SearchCacheSchema = new mongoose.Schema({
     },
     expirationDate: {
         type: Date,
-        default: (Date.now() + 86400000 * 2),
+        default: (Date.now() + 86400000),
         required: true
     }
 });
