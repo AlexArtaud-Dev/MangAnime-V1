@@ -4,6 +4,7 @@ const browserObject = require('../functions/scrapper/browser');
 const scraperController = require('../functions/scrapper/pageController');
 const malScraper = require('mal-scraper')
 const User = require('../models/User');
+const SearchCache = require("../models/SearchCache");
 const verify = require('./middlewares/verifyToken');
 const verifyAdmin = require('./middlewares/verifyAdminToken');
 const mongoose = require("mongoose");
@@ -37,26 +38,36 @@ const Anime = require("anime-scraper").Anime;
  */
 router.get('/search/:name', verify, async (req, res) => {
     if (!req.params.name) return res.status(400).send("No name given.")
-    await searchAnime(req.params.name)
-        .then(async value => {
-            const animeSearchArray = [];
-            for (const anime of value) {
-                const pictures = await malScraper.getPictures(anime.name);
-                const newAnime = {
-                    id: anime.id,
-                    name: anime.name,
-                    url: anime.url,
-                    date: anime.date,
-                    episodesNumber: anime.episodesNumber,
-                    picture: pictures[pictures.length-1]
+    const cache = await SearchCache.findOne({name: req.params.name.toLowerCase()});
+    if (cache){
+        res.status(200).send(cache.result);
+    }else{
+        await searchAnime(req.params.name)
+            .then(async value => {
+                const animeSearchArray = [];
+                for (const anime of value) {
+                    const pictures = await malScraper.getPictures(anime.name);
+                    const newAnime = {
+                        id: anime.id,
+                        name: anime.name,
+                        url: anime.url,
+                        date: anime.date,
+                        episodesNumber: anime.episodesNumber,
+                        picture: pictures[pictures.length-1]
+                    }
+                    animeSearchArray.push(newAnime);
                 }
-                animeSearchArray.push(newAnime);
-            }
-            res.status(200).send(animeSearchArray);
-        }).catch(error => {
-            console.log(error)
-            res.status(500).send(error.message);
-        })
+                const toCache = new SearchCache({
+                    name: req.params.name.toLowerCase(),
+                    result: animeSearchArray
+                })
+                await toCache.save();
+                res.status(200).send(animeSearchArray);
+            }).catch(error => {
+                console.log(error)
+                res.status(500).send(error.message);
+            })
+    }
 })
 
 /**
