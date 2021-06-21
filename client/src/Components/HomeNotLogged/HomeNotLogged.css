@@ -1,0 +1,13 @@
+.logo {
+    transition: opacity 0.5s;
+    opacity: 1;
+}
+.logo .hide {
+    opacity: 0;
+    pointer-events:none;
+}
+
+.container{
+    display: flex;
+    flex-direction: row;
+}

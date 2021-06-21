@@ -5,7 +5,7 @@ const swaggerOptions = {
             contact : {
                 name: "AlexArtaud-Dev"
             },
-            version: "1.1.0",
+            version: "Alpha 1.2.0",
             servers: ["https://localhost:5000"]
         },
         basePath: "/api",
