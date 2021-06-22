@@ -1,0 +1,17 @@
+#components-layout-demo-custom-trigger .logo {
+    height: 32px;
+    margin: 16px;
+    background: rgba(255, 255, 255, 0.3);
+}
+.ant-menu-item{
+    color: white;
+    height: 50px;
+    font-size: 150%;
+}
+.ant-menu-submenu-title{
+    color: white;
+    font-size: 150%;
+}
+.ant-layout-sider-trigger{
+    background-color: #1d0040;
+}

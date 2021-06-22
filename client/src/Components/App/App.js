@@ -1,12 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom';
-import Home from "../../Pages/Home/Home";
 import NotFoundPage from "../../Pages/NotFound/NotFoundPage";
 import './App.less';
 import NotFoundNotLoggedPage from "../../Pages/NotFoundNotLogged/NotFoundNotLoggedPage";
 import HomeNotLoggedPage from "../../Pages/HomeNotLoggedPage/HomeNotLoggedPage";
 import LoginPage from "../../Pages/LoginPage/LoginPage";
 import {checkToken} from "../../Functions/auth";
+import HomePage from "../../Pages/HomePage/HomePage";
+import RegisterPage from "../../Pages/RegisterPage/RegisterPage";
 
 function App() {
     const [logged, setLogged] = useState({
@@ -39,6 +40,9 @@ function App() {
                           <Route exact path="/login">
                               <LoginPage/>
                           </Route>
+                          <Route exact path="/register">
+                              <RegisterPage/>
+                          </Route>
                           <Route exact path="/404">
                               <NotFoundNotLoggedPage/>
                           </Route>
@@ -49,7 +53,7 @@ function App() {
                   <Router>
                       <Switch>
                           <Route exact path="/home">
-                              <Home/>
+                              <HomePage/>
                           </Route>
                           <Route exact path="/404">
                               <NotFoundPage/>

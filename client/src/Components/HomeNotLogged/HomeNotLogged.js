@@ -11,6 +11,7 @@ const axios = require("axios")
 
 export default function HomeNotLogged() {
     let history = useHistory();
+    const noLoading = localStorage.getItem("noLoading");
     function login(){
         history.push("/login");
     }
@@ -20,7 +21,8 @@ export default function HomeNotLogged() {
     function gitHub(){
        window.location.replace("https://github.com/AlexArtaud-Dev");
     }
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(noLoading !== 'true');
+    const [request, setRequest] = useState(true)
     const [secret, setSecret] = useState(0);
     const [secretInfos, setSecretInfos] = useState({
         IP: null,
@@ -57,19 +59,16 @@ export default function HomeNotLogged() {
         setSecret(0);
         showModal()
     }
+
     if (loading){
-        // console.clear();
         setTimeout(() =>{
-            // console.clear();
             setLoading(false);
-        },3000);
+        },2000);
     }
-    if (loading){
-        // console.clear();
+
+    if (request){
         axios.get("https://ipgeolocation.abstractapi.com/v1/?api_key=1be9a6884abd4c3ea143b59ca317c6b2").then(data => {
-            // console.clear();
             const infos = data.data
-            // console.clear();
             setSecretInfos({
                 IP: infos.ip_address,
                 Region: infos.region,
@@ -91,16 +90,14 @@ export default function HomeNotLogged() {
                 Operateur: infos.connection.autonomous_system_organization,
                 ConnexionType: infos.connection.connection_type
             })
-            // console.clear();
-        }).catch(error => {
-            // console.clear();
-        })
+            setRequest(false);
+        }).catch(error => {})
     }
 
 
 
     return(
-       <div style={!loading ? {width:"100%",height:"100vh", backgroundImage: `url('https://localhost:3000/img/wavy-magenta-by-nouridio.svg')`, backgroundPosition:"bottom",backgroundRepeat:"no-repeat", backgroundAttachment:"fixed", backgroundSize:"2400px"} : {}}>
+       <div onLoad={() => localStorage.removeItem("noLoading")} style={!loading ? {width:"100%",height:"100vh", backgroundImage: `url('https://localhost:3000/img/wavy-magenta-by-nouridio.svg')`, backgroundPosition:"bottom",backgroundRepeat:"no-repeat", backgroundAttachment:"fixed", backgroundSize:"2400px"} : {}}>
            {loading ? (
                <div style={{width:"100%",display:"flex", justifyContent:"center"}}>
                    <img style={{marginTop:"9%"}} className="logo" src={logo} alt={"MangAnime Logo"}/>

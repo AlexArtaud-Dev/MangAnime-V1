@@ -46,7 +46,32 @@ export function checkTokenRequest(token){
             return error.response;
         });
 }
-export function goLocalLogin(email, password, remember){
+export function mangAnimeRegister(nickname, email, password, passwordConfirmation, key){
+    const instance = axios.create({
+        baseURL: 'https://localhost:5000/api',
+        method: "post",
+        timeout: 30000,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    let data = {
+        "key": key,
+        "nickname": nickname,
+        "email": email,
+        "password": password,
+        "passwordConfirmation": passwordConfirmation
+    }
+    return instance
+        .post('/user/register', data)
+        .then((response) => {
+            return {status: response.status, message: "Registered"}
+        })
+        .catch((error) => {
+            return {status: error.response.status, message: error.response.data.error}
+        });
+}
+export function mangAnimeLogin(email, password, remember){
     const instance = axios.create({
         baseURL: 'https://localhost:5000/api',
         method: "post",
@@ -74,4 +99,10 @@ export function goLocalLogin(email, password, remember){
         .catch((error) => {
             return {status: error.response.status, message: error.response.data.error}
         });
+}
+export function logout(){
+    localStorage.removeItem("_to")
+    localStorage.removeItem("_ex")
+    localStorage.removeItem("_re")
+    window.location.replace("https://localhost:3000/")
 }

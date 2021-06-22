@@ -28,6 +28,7 @@ const checkKey = require('../utils/axiosRequests/checkKey');
  *                 - nickname
  *                 - email
  *                 - password
+ *                 - passwordConfirmation
  *              properties:
  *                 key:
  *                   type: string
@@ -36,6 +37,8 @@ const checkKey = require('../utils/axiosRequests/checkKey');
  *                 email:
  *                   type: string
  *                 password:
+ *                   type: string
+ *                 passwordConfirmation:
  *                   type: string
  *      responses:
  *         '200':
@@ -74,6 +77,8 @@ router.post('/register', async(req, res) => {
             if (emailExist) return res.status(400).send({ message: "Email already exist !" })
 
             // Password Hashing
+            if (!req.body.passwordConfirmation) return res.status(400).send({ message: "Missing password confirmation" })
+            if (req.body.password !== req.body.passwordConfirmation) return res.status(400).send({ message: "The two password does not match" })
             const salt = await bcrypt.genSalt(10);
             const hashPassword = await bcrypt.hash(req.body.password, salt);
 
