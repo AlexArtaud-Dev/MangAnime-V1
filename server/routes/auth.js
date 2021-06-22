@@ -94,6 +94,7 @@ router.post('/register', async(req, res) => {
 
 });
 
+
 /**
  * @swagger
  * /user/login:
@@ -141,6 +142,39 @@ router.post('/login', async(req, res) => {
 
     const token = jwt.sign({ _id: user.id }, process.env.TOKEN_SECRET);
     res.status(200).send(token);
+})
+
+/**
+ * @swagger
+ * /user/checkToken:
+ *   post:
+ *      description: Use to check if a token is valid
+ *      tags:
+ *          - Auth
+ *      security:
+ *          - Bearer: []
+ *      responses:
+ *         '200':
+ *           description: Token is valid
+ *         '400':
+ *           description: Token is not valid
+ *         '401':
+ *           description: No Token provided
+ *         '500':
+ *           description: Internal servor error
+ */
+router.post('/checkToken', async(req, res) => {
+    const token = req.header('auth-token');
+    if (!token) return res.status(401).send({ message: "No Token provided" });
+    try{
+        const user = jwt.verify(token, process.env.TOKEN_SECRET);
+        if (user) return res.status(200).send({status: true});
+    }catch (e) {
+        return res.status(400).send({status: false});
+    }
+
+
+
 })
 
 /**

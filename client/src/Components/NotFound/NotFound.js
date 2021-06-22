@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 export default function NotFound() {
     let history = useHistory();
     function goHome(){
-        history.push("/home/15");
+        history.push("/home");
     }
 
     return(
