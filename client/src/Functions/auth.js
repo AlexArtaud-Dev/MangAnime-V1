@@ -104,5 +104,6 @@ export function logout(){
     localStorage.removeItem("_to")
     localStorage.removeItem("_ex")
     localStorage.removeItem("_re")
+    localStorage.setItem("noLoading", "true");
     window.location.replace("https://localhost:3000/")
 }

@@ -130,8 +130,8 @@ export default function HomeNotLogged() {
                               This website was developped to help people watch animes without any ads or any subscription.<br/>
                               MangAnime is not hosting any of the content that is displayed inside the website.
                           </p>
-                          <Button style={{width:"25%", paddingBottom:"1.9%", fontSize:"140%"}} type="primary" shape="round" icon={<GithubOutlined />} size={'large'} onClick={gitHub} ghost>Github</Button>
-                          <Button style={{width:"25%", paddingBottom:"1.9%", fontSize:"140%", marginLeft:"4%"}} type="primary" shape="round" size={'large'} onClick={login}>Login</Button>
+                          <Button style={{width:"38%", paddingBottom:"3.3%", fontSize:"140%"}} type="primary" shape="round" icon={<GithubOutlined />} size={'large'} onClick={gitHub} ghost>Github</Button>
+                          <Button style={{width:"38%", paddingBottom:"3.3%", fontSize:"140%", marginLeft:"4%"}} type="primary" shape="round" size={'large'} onClick={login}>Login</Button>
                       </div>
                       <div style={{marginTop:"5%", width:"50%", display:"flex", justifyContent:"center"}}>
                           <img style={{width:"60%"}} src={shibi} alt={"MangAnime Shibi"} onClick={() => setSecret(secret+1)}/>

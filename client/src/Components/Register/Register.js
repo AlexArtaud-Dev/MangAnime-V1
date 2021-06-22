@@ -19,24 +19,20 @@ export default function Register() {
         const keyRegex = new RegExp('^[0-9A-Za-z_]+-[0-9A-Za-z_]+-[0-9A-Za-z_]+-[0-9A-Za-z_]+$');
         mangAnimeRegister(values.nickname, values.email, values.password, values.passwordConfirmation, values.key).then(result => {
             if (!emailRegex.test(values.email)){
-                console.log("1")
                 message
                     .loading('Trying to log you in..', 0.5)
                     .then(() => message.warning("Bad email format", 3))
             }else{
-                console.log("2")
                 if (!keyRegex.test(values.key)){
                     message
                         .loading('Trying to log you in..', 0.5)
                         .then(() => message.warning("Wrong invitation key format", 3))
                 }else{
-                    console.log("3")
                     if (values.password !== values.passwordConfirmation){
                         message
                             .loading('Trying to log you in..', 0.5)
                             .then(() => message.warning("Your two passwords does not match", 3))
                     }else{
-                        console.log("4")
                         if (result){
                             if (result.status === 200){
                                 message
