@@ -53,7 +53,7 @@ router.post('/generate', verify, verifyAdmin, async(req, res) => {
  *           description: Internal servor error
  */
 router.get('/all',verify, verifyAdmin, async(req, res) => {
-    const keys = await ApiKey.find({expirationDate : {$gt: Date.now()}})
+    const keys = await ApiKey.find({expirationDate : {$gt: Date.now()}}).sort({creatorID:1})
     if (!keys || keys.length === 0) return res.status(404).send({message : "Nothing Found"})
     const keysArrays = [];
     for (let i=0; i < keys.length; i++) {
@@ -136,7 +136,7 @@ router.get('/:key', async(req, res) => {
  *           description: Internal servor error (probably a conversion error)
  */
 router.delete('/:key', verify, verifyAdmin, async(req, res) => {
-    if (uuidAPIKey.isAPIKey(req.params.key) === false) return res.status(422).send({ error: "The format of the API KEY you wanted to check is incorrect" });
+    if (uuidAPIKey.isAPIKey(req.params.key) === false) return res.status(422).send({ error: "The format of the API KEY you wanted to delete is incorrect" });
     const UUIDKEY = uuidAPIKey.toUUID(req.params.key);
     if (uuidAPIKey.isUUID(UUIDKEY) === false) return res.status(500).send({ error: "Internal Server Error (A problem happened during key conversion)" })
     const key = await ApiKey.findOne({ UUID: UUIDKEY });

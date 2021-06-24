@@ -18,12 +18,19 @@ import {getUserInfos} from "../../Functions/user";
 import Watched from "../Watched/Watched";
 import ServerInfo from "../ServerInfo/ServerInfo";
 import GenerateKey from "../GenerateKey/GenerateKey";
+import ManageKeys from "../ManageKeys/ManageKeys";
+import { useHistory } from "react-router-dom";
+import ManageUsers from "../ManageUsers/ManageUsers";
 const { Content, Sider } = Layout;
 const { SubMenu } = Menu;
 
 
 export default function Home() {
     // const { id } = useParams();
+    let history = useHistory();
+    function goHome(){
+        history.push("/home");
+    }
     const [collapsed, setCollapsed] = useState(false)
     const [itemToDisplay, setItemToDisplay] = useState(<Trending/>);
     function collapse(){
@@ -58,21 +65,39 @@ export default function Home() {
             <Sider collapsible collapsed={collapsed} onCollapse={collapse} style={{ backgroundColor:"#100024", boxShadow:" 1px 0px 2px #1d0040" }}>
                 <div className="logo" style={{fontSize:"200%", textAlign:"center", fontWeight:"bold", paddingTop:"10%",paddingBottom:"10%", borderBottom:"7px solid black", backgroundColor:"#1d0040"}}>{!collapsed ? "MangAnime" : "M"}</div>
                 <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-                    <Menu.Item style={{ color:"white"}} key="1" icon={<RiseOutlined style={{fontSize:"100%"}}/>} onClick={() => setItemToDisplay(<Trending/>)}>
+                    <Menu.Item style={{ color:"white"}} key="1" icon={<RiseOutlined style={{fontSize:"100%"}}/>} onClick={() => {
+                        setItemToDisplay(<Trending/>)
+                        goHome();
+                    }}>
                         Trending
                     </Menu.Item>
                     <Menu.Item style={{ color:"white"}} key="2" icon={<SearchOutlined style={{fontSize:"100%"}}/>}>
                         Search
                     </Menu.Item>
-                    <Menu.Item style={{ color:"white"}} key="3" icon={<EyeOutlined style={{fontSize:"100%"}}/>} onClick={() => setItemToDisplay(<Watched/>)}>
+                    <Menu.Item style={{ color:"white"}} key="3" icon={<EyeOutlined style={{fontSize:"100%"}}/>} onClick={() => {
+                        setItemToDisplay(<Watched/>)
+                        goHome();
+                    }}>
                         Watched
                     </Menu.Item>
                     {!loading && user.authority.level === 10 ? (
                         <SubMenu style={{ color:"white"}} key="sub1" icon={<CrownOutlined style={{fontSize:"100%"}}/>} title="Admin Panel">
-                            <Menu.Item style={{ color:"white"}} key="5" icon={<TeamOutlined style={{fontSize:"90%"}}/>}>Users</Menu.Item>
-                            <Menu.Item style={{ color:"white"}} key="6" icon={<PlusCircleOutlined style={{fontSize:"90%"}}/>} onClick={() => setItemToDisplay(<GenerateKey/>)}>Generate Key</Menu.Item>
-                            <Menu.Item style={{ color:"white"}} key="7" icon={<KeyOutlined style={{fontSize:"90%"}}/>}>Manage Keys</Menu.Item>
-                            <Menu.Item style={{ color:"white"}} key="8" icon={<InfoCircleOutlined style={{fontSize:"90%"}}/>} onClick={() => setItemToDisplay(<ServerInfo/>)}>Global Infos</Menu.Item>
+                            <Menu.Item style={{ color:"white"}} key="5" icon={<TeamOutlined style={{fontSize:"90%"}}/>} onClick={() => {
+                                setItemToDisplay(<ManageUsers/>);
+                                goHome();
+                            }}>Users</Menu.Item>
+                            <Menu.Item style={{ color:"white"}} key="6" icon={<PlusCircleOutlined style={{fontSize:"90%"}}/>} onClick={() => {
+                                setItemToDisplay(<GenerateKey/>);
+                                goHome();
+                            }}>Generate Key</Menu.Item>
+                            <Menu.Item style={{ color:"white"}} key="7" icon={<KeyOutlined style={{fontSize:"90%"}}/>} onClick={() => {
+                                setItemToDisplay(<ManageKeys/>)
+                                goHome();
+                            }}>Manage Keys</Menu.Item>
+                            <Menu.Item style={{ color:"white"}} key="8" icon={<InfoCircleOutlined style={{fontSize:"90%"}}/>} onClick={() => {
+                                setItemToDisplay(<ServerInfo/>)
+                                goHome();
+                            }}>Global Infos</Menu.Item>
                         </SubMenu>
                     ) : (
                         <div/>

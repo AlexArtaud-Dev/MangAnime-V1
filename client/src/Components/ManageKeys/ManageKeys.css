@@ -1,0 +1,42 @@
+
+.accordion-demo .accordion-custom i, .accordion-demo .accordion-custom span {
+    vertical-align: middle;
+}
+
+.accordion-demo .accordion-custom span {
+    margin: 0 .5rem;
+}
+
+.accordion-demo .p-accordion p {
+    line-height: 1.5;
+    margin: 0;
+}
+.pi-chevron-right{
+    font-size: 150%;
+    margin-right: 2%;
+    margin-left: 2%;
+}
+.p-accordion-tab{
+    border: 3px solid #1d0040;
+    margin-bottom: 1%;
+}
+.pi-chevron-down{
+    font-size: 150%;
+    margin-right: 2%;
+    margin-left: 2%;
+}
+.p-accordion-header{
+    height: 30px;
+}
+.p-accordion-header-text{
+    font-size: 130%;
+    width: 85%;
+}
+.p-accordion-header-link{
+    height: 30px;
+    /*background-color: black;*/
+}
+.p-scrollpanel-bar{
+    background: #a02669;
+
+}
