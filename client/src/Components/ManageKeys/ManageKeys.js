@@ -71,7 +71,6 @@ export default function ManageKeys() {
                             });
                         });
                 }else{
-                    console.log(data.data.error)
                     message.error({
                         content: data.data.error,
                         style: {
@@ -102,7 +101,6 @@ export default function ManageKeys() {
     const { loading, keys } = keysRequest;
     const keyArray = [];
     if (keys && keys.length !== 0){
-        console.log(keys)
         keys.forEach(key => {
             const creationNotTreated = key.creationDate.split("T")
             let date = creationNotTreated[0]
