@@ -6,7 +6,7 @@ const swaggerOptions = {
                 name: "AlexArtaud-Dev"
             },
             version: "Alpha 1.2.0",
-            servers: ["https://localhost:5000"]
+            servers: ["https://86.221.232.6:5000"]
         },
         basePath: "/api",
         paths : {},
@@ -31,6 +31,9 @@ const swaggerOptions = {
             },
             {
                 name: "Scrapper"
+            },
+            {
+                name: "Server"
             },
             {
                 name: "User"

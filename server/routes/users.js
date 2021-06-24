@@ -36,6 +36,109 @@ router.get('/', verify, async(req, res) => {
 
 /**
  * @swagger
+ * /users/search:
+ *   post:
+ *      description: Use to search for user with letter or name or email
+ *      tags:
+ *          - User
+ *      security:
+ *          - Bearer: []
+ *      parameters:
+ *          - in: body
+ *            name: Users
+ *            schema:
+ *              type: object
+ *              required:
+ *                 - nickname
+ *                 - email
+ *                 - letter
+ *              properties:
+ *                 nickname:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 letter:
+ *                   type: string
+ *      responses:
+ *         '200':
+ *           description: Successfull Request
+ *         '400':
+ *           description: You can only search by one parameter (nickname, email or letter)
+ *         '401':
+ *           description: Unauthorized
+ *         '404':
+ *           description: Nothing Found
+ *         '500':
+ *           description: Internal servor error
+ */
+router.post('/search', verify, async(req, res) => {
+    if (((req.body.nickname && req.body.email) || (req.body.nickname && req.body.letter) || (req.body.letter && req.body.email))){
+        res.status(400).send("You can only search by one parameter (nickname, email or letter)")
+    }
+    let users;
+    if (req.body.nickname){
+        console.log("nickname")
+        const usersArray = [];
+        let usersFound = await User.find({ nickname: { $regex: `^.*${req.body.nickname}.*$` } })
+        if (usersFound){
+            usersFound.forEach(user => {
+                usersArray.push({
+                    _id: user._id,
+                    nickname: user.nickname,
+                    email: user.email,
+                    authorityLevel: user.authority.level
+                })
+            })
+        }
+        users = usersArray;
+    }
+    if (req.body.email){
+        const usersArray = [];
+        let user = await User.find({ email: req.body.email.toLowerCase() })
+        if (user && user.length !== 0){
+            usersArray.push({
+                _id: user[0]._id,
+                nickname: user[0].nickname,
+                email: user[0].email,
+                authorityLevel: user[0].authority.level
+            })
+            users = usersArray
+        }else{
+            res.status(400).send({ message: "Nothing Found" })
+        }
+    }
+    if (req.body.letter){
+        let userOne = await User.find({ nickname: { $regex: `^${req.body.letter.toLowerCase()}.*$` } })
+        let userTwo = await User.find({ nickname: { $regex: `^${req.body.letter.toUpperCase()}.*$` } })
+        const usersArray = [];
+        if (userOne){
+            userOne.forEach(user => {
+                usersArray.push({
+                    _id: user._id,
+                    nickname: user.nickname,
+                    email: user.email,
+                    authorityLevel: user.authority.level
+                })
+            })
+        }
+        if (userTwo){
+            userTwo.forEach(user => {
+                usersArray.push({
+                    _id: user._id,
+                    nickname: user.nickname,
+                    email: user.email,
+                    authorityLevel: user.authority.level
+                })
+            })
+        }
+        users = usersArray;
+    }
+    if (!users || users.length === 0) return res.status(400).send({ message: "Nothing Found" });
+    res.status(200).send(users);
+})
+
+/**
+ * @swagger
  * /users/{id}:
  *   get:
  *      description: Use to get user informations from id

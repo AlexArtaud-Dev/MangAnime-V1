@@ -7,7 +7,7 @@ import {Typography, Row, Button, Modal} from 'antd';
 import { GithubOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 const axios = require("axios")
-
+const {IP} = require("../../config")
 
 export default function HomeNotLogged() {
     let history = useHistory();
@@ -97,7 +97,7 @@ export default function HomeNotLogged() {
 
 
     return(
-       <div onLoad={() => localStorage.removeItem("noLoading")} style={!loading ? {width:"100%",height:"100vh", backgroundImage: `url('https://localhost:3000/img/wavy-magenta-by-nouridio.svg')`, backgroundPosition:"bottom",backgroundRepeat:"no-repeat", backgroundAttachment:"fixed", backgroundSize:"2400px"} : {}}>
+       <div onLoad={() => localStorage.removeItem("noLoading")} style={!loading ? {width:"100%",height:"100vh", backgroundImage: `url('${IP}img/wavy-magenta-by-nouridio.svg')`, backgroundPosition:"bottom",backgroundRepeat:"no-repeat", backgroundAttachment:"fixed", backgroundSize:"2400px"} : {}}>
            {loading ? (
                <div style={{width:"100%",display:"flex", justifyContent:"center"}}>
                    <img style={{marginTop:"9%"}} className="logo" src={logo} alt={"MangAnime Logo"}/>

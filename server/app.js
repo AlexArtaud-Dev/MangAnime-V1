@@ -31,6 +31,7 @@ app.use(cors({ origin: '*' }));
 // Import Routes
 const animeRoute = require('./routes/anime');
 const scrapperRoute = require('./routes/scrapper');
+const serverRoute = require('./routes/server');
 const usersRoute = require('./routes/users');
 const apikeyRoute = require('./routes/ApiKey');
 const authRoute = require('./routes/auth');
@@ -38,6 +39,7 @@ const authRoute = require('./routes/auth');
 // Route Middlewares
 app.use('/api/anime', animeRoute);
 app.use('/api/scrapper', scrapperRoute);
+app.use('/api/server', serverRoute);
 app.use('/api/key', apikeyRoute);
 app.use('/api/user', authRoute);
 app.use('/api/users', usersRoute);

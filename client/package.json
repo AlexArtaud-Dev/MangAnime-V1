@@ -19,12 +19,15 @@
     "ipify2": "^1.1.0",
     "mock-aws-s3": "^4.0.2",
     "nock": "^13.1.0",
+    "primeicons": "^4.1.0",
+    "primereact": "^6.4.1",
     "public-ip": "^4.0.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-public-ip": "^1.0.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "react-transition-group": "^4.4.2",
     "web-vitals": "^1.1.2"
   },
   "scripts": {

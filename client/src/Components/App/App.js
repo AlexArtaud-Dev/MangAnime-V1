@@ -55,6 +55,9 @@ function App() {
                           <Route exact path="/home">
                               <HomePage/>
                           </Route>
+                          <Route exact path="/anime/:name">
+                              <HomePage/>
+                          </Route>
                           <Route exact path="/404">
                               <NotFoundPage/>
                           </Route>

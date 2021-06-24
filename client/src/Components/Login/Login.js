@@ -2,17 +2,20 @@ import React from 'react';
 import {Form, Input, Button, Checkbox, Typography, message} from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import {mangAnimeLogin} from "../../Functions/auth"
-
+import { useHistory } from "react-router-dom";
 import "./Login.css"
 const { Title } = Typography;
-
+const {IP} = require("../../config")
 
 export default function Login() {
-
+    let history = useHistory();
+    function goLogin(){
+        history.push("/register");
+    }
 
     function goHome(){
         localStorage.setItem("noLoading", "true");
-        window.location.replace("https://localhost:3000/");
+        window.location.replace(IP);
     }
     const onFinish = (values) => {
         const emailRegex = new RegExp('(?:[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\\])');
@@ -65,7 +68,7 @@ export default function Login() {
                         <Button style={{width:"100%", fontSize:"140%", paddingBottom:"10%"}} type="primary" htmlType="submit" className="login-form-button">
                             Log in
                         </Button>
-                        <p style={{marginTop:"5px", fontSize:"110%", float:"right"}}><a href="">Register now!</a></p>
+                        <p style={{marginTop:"5px", fontSize:"110%", float:"right"}}><a onClick={goLogin}>Register now!</a></p>
                     </Form.Item>
                 </Form>
             </div>

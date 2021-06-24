@@ -22,7 +22,11 @@ module.exports = {
                             '@modal-content-bg': '#1d0040',
                             '@modal-footer-bg': '#1d0040',
                             '@body-background': '#090013',
-                            '@font-family': 'Lato, sans-serif'
+                            '@tooltip-bg': '#a02669',
+                            '@tooltip-max-width' : '450px',
+                            '@progress-circle-text-font-size' : '3em',
+                            '@font-family': 'Lato, sans-serif',
+                            '@spin-dot-size-lg' : "50px"
                         },
                         javascriptEnabled: true,
                     },

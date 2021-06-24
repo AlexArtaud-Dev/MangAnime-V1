@@ -73,7 +73,7 @@ router.post('/register', async(req, res) => {
             if (error) return res.status(400).send({ Error: error.details[0].message });
 
             // Checking if the user is already in the database
-            const emailExist = await User.findOne({ email: req.body.email })
+            const emailExist = await User.findOne({ email: req.body.email.toLowerCase() })
             if (emailExist) return res.status(400).send({ message: "Email already exist !" })
 
             // Password Hashing
@@ -85,7 +85,7 @@ router.post('/register', async(req, res) => {
             // Create a new User
             const user = new User({
                 nickname: req.body.nickname,
-                email: req.body.email,
+                email: req.body.email.toLowerCase(),
                 password: hashPassword
             });
             try {
@@ -98,7 +98,6 @@ router.post('/register', async(req, res) => {
         })
 
 });
-
 
 /**
  * @swagger
@@ -136,7 +135,7 @@ router.post('/login', async(req, res) => {
     if (error) return res.status(400).send({ Error: error.details[0].message });
 
     // Checking if the email is already in the database
-    const user = await User.findOne({ email: req.body.email })
+    const user = await User.findOne({ email: req.body.email.toLowerCase() })
     if (!user) return res.status(400).send({ message: "Email doesn't exist !" });
 
     // Checking if password is correct

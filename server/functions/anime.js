@@ -5,23 +5,26 @@ const axios = require("axios");
 const malScraper = require("mal-scraper");
 
 async function searchAnime(name, offset = 100, startfrom = 1) {
-    const untreatedAnimeArray = [];
     const treatedAnimeArray = [];
 
     const animeResults = await Anime.search(name);
+
     if (offset > animeResults.length){
         offset = animeResults.length;
     }
-    for(let i =0; i < (startfrom-1) + offset ; i++){
-        const animeInfos = await animeResults[i].toAnime();
-        const animeObject = {
-            id: animeInfos.id,
-            name: animeInfos.name,
-            url: animeInfos.url.replace("https://gogoanime.io", ""),
-            date: animeInfos.released,
-            episodesNumber: animeInfos.episodes.length
-        };
-        treatedAnimeArray.push(animeObject);
+
+    for(let i = 0; i < (startfrom-1) + offset ; i++){
+        try{
+            const animeInfos = await animeResults[i].toAnime();
+            const animeObject = {
+                id: animeInfos.id,
+                name: animeInfos.name,
+                url: animeInfos.url.replace("https://gogoanime.io", ""),
+                date: animeInfos.released,
+                episodesNumber: animeInfos.episodes.length
+            };
+            treatedAnimeArray.push(animeObject);
+        }catch (e) {}
     }
     return treatedAnimeArray;
 }

@@ -58,14 +58,16 @@ router.get('/search/:name', verify, async (req, res) => {
                     }
                     animeSearchArray.push(newAnime);
                 }
-                const toCache = new SearchCache({
-                    name: req.params.name.toLowerCase(),
-                    result: animeSearchArray
-                })
-                await toCache.save();
+                if (animeSearchArray.length !== 0){
+                    const toCache = new SearchCache({
+                        name: req.params.name.toLowerCase(),
+                        result: animeSearchArray
+                    })
+                    await toCache.save();
+                }
                 res.status(200).send(animeSearchArray);
             }).catch(error => {
-                console.log(error)
+                console.log("Erreur : " + error)
                 res.status(500).send(error.message);
             })
     }
@@ -113,6 +115,34 @@ router.get('/popular/:limit', verify, async (req, res) => {
         topAnimesArray.push(object);
     })
     res.status(200).send(topAnimesArray)
+})
+
+/**
+ * @swagger
+ * /anime/watched:
+ *   get:
+ *      description: Use to get user watched animes
+ *      tags:
+ *          - Anime
+ *      security:
+ *          - Bearer: []
+ *      responses:
+ *         '200':
+ *           description: Successfull Request
+ *         '400':
+ *           description: Account not found
+ *         '401':
+ *           description: Unauthorized
+ *         '404':
+ *           description: Nothing Found
+ *         '500':
+ *           description: Internal servor error
+ */
+router.get('/watched', verify, async (req, res) => {
+    const user = await User.findOne({_id: req.user._id});
+    if (!user) return res.status(400).send("No account corresponding to this token in the database");
+    if (user.watchedAnimes.length === 0) return res.status(404).send("Nothing Found");
+    res.status(200).send(user.watchedAnimes);
 })
 
 /**
@@ -174,14 +204,22 @@ router.get('/:name', verify, async (req, res) => {
                             studios: infos.studios,
                         }
                         const user = await User.findOne({_id : mongoose.Types.ObjectId(req.user._id)})
-                        user.watchedAnimes.push({
-                            id : value.id,
-                            name: value.name,
-                            url : url[0].url,
-                            picture: infos.picture,
-                            watchedEpisodes : []
+                        let alreadyExist = false;
+                        user.watchedAnimes.forEach(anime =>{
+                            if (anime.id === value.id && anime.name === value.name){
+                                alreadyExist = true;
+                            }
                         })
-                        await user.save();
+                        if (!alreadyExist) {
+                            user.watchedAnimes.push({
+                                id: value.id,
+                                name: value.name,
+                                url: url[0].url,
+                                picture: infos.picture,
+                                watchedEpisodes: []
+                            })
+                            await user.save();
+                        }
                         res.status(200).send(animeInfos);
                     }
                 }).catch(error => {

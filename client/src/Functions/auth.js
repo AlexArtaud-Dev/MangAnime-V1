@@ -1,6 +1,8 @@
 import { encrypt, decrypt } from '@devoxa/aes-encryption'
+import {ApiIP} from "../config";
 const axios = require('axios');
 const {SALT_HASH} = require("./config")
+const {IP} = require("../config")
 
 export async function checkToken(){
     const token = localStorage.getItem("_to")
@@ -13,22 +15,28 @@ export async function checkToken(){
     return checkTokenRequest(decryptedToken).then(res => {
         if (res.data.status === false) return {status: 1, message:"Invalid Token"}
         if (decryptedRemember === 'true'){
-            return {status: 0, message:"Valid Token"}
+            return {status: 0, message:"Valid Token", token: decryptedToken}
         }else{
             if (parseInt(decryptedExpiration) <= Date.now()){
                 localStorage.removeItem("_to");
                 localStorage.removeItem("_ex");
                 localStorage.removeItem("_re")
-                window.location.replace("https://localhost:3000/")
+                window.location.replace(IP)
             }else{
-                return {status: 0, message:"Valid Token"}
+                return {status: 0, message:"Valid Token", token: decryptedToken}
             }
         }
     })
 }
+export function clearToken(){
+    localStorage.removeItem("_to");
+    localStorage.removeItem("_ex");
+    localStorage.removeItem("_re")
+    window.location.replace(IP)
+}
 export function checkTokenRequest(token){
     const instance = axios.create({
-        baseURL: 'https://localhost:5000/api',
+        baseURL: ApiIP,
         method: "post",
         timeout: 30000,
         headers: {
@@ -48,7 +56,7 @@ export function checkTokenRequest(token){
 }
 export function mangAnimeRegister(nickname, email, password, passwordConfirmation, key){
     const instance = axios.create({
-        baseURL: 'https://localhost:5000/api',
+        baseURL: ApiIP,
         method: "post",
         timeout: 30000,
         headers: {
@@ -73,7 +81,7 @@ export function mangAnimeRegister(nickname, email, password, passwordConfirmatio
 }
 export function mangAnimeLogin(email, password, remember){
     const instance = axios.create({
-        baseURL: 'https://localhost:5000/api',
+        baseURL: ApiIP,
         method: "post",
         timeout: 30000,
         headers: {
@@ -97,6 +105,7 @@ export function mangAnimeLogin(email, password, remember){
             return {status: response.status, message: "Connected"}
         })
         .catch((error) => {
+            console.log(error)
             return {status: error.response.status, message: error.response.data.error}
         });
 }
@@ -105,5 +114,5 @@ export function logout(){
     localStorage.removeItem("_ex")
     localStorage.removeItem("_re")
     localStorage.setItem("noLoading", "true");
-    window.location.replace("https://localhost:3000/")
+    window.location.replace(IP)
 }
