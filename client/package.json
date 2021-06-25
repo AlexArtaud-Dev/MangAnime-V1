@@ -31,13 +31,11 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "set HTTPS=true&&set PORT=3000&&react-scripts start",
-    "build": "react-scripts build",
+    "start": "craco start",
+    "build": "craco build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "cracoStart": "set HTTPS=true&&set PORT=3000&&craco start",
-    "cracoBuild": "craco build",
-    "cracoTest": "craco test"
+    "cracoStart": "set HTTPS=true&&set PORT=3000&&craco start"
   },
   "eslintConfig": {
     "extends": [

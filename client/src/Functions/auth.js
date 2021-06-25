@@ -21,7 +21,7 @@ export async function checkToken(){
                 localStorage.removeItem("_to");
                 localStorage.removeItem("_ex");
                 localStorage.removeItem("_re")
-                window.location.replace(IP)
+                window.location.replace("/")
             }else{
                 return {status: 0, message:"Valid Token", token: decryptedToken}
             }
@@ -32,7 +32,7 @@ export function clearToken(){
     localStorage.removeItem("_to");
     localStorage.removeItem("_ex");
     localStorage.removeItem("_re")
-    window.location.replace(IP)
+    window.location.replace("/")
 }
 export function checkTokenRequest(token){
     const instance = axios.create({
@@ -41,6 +41,7 @@ export function checkTokenRequest(token){
         timeout: 30000,
         headers: {
             'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
             'auth-token': `${token}`
         },
         data: {}
@@ -60,7 +61,8 @@ export function mangAnimeRegister(nickname, email, password, passwordConfirmatio
         method: "post",
         timeout: 30000,
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
         }
     });
     let data = {
@@ -85,7 +87,8 @@ export function mangAnimeLogin(email, password, remember){
         method: "post",
         timeout: 30000,
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
         }
     });
     let data = {
@@ -114,5 +117,5 @@ export function logout(){
     localStorage.removeItem("_ex")
     localStorage.removeItem("_re")
     localStorage.setItem("noLoading", "true");
-    window.location.replace(IP)
+    window.location.replace("/")
 }
