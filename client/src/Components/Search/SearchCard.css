@@ -1,0 +1,14 @@
+.ant-card-body{
+    display: none;
+}
+.ant-tooltip-inner{
+    font-size: 130%;
+}
+.ant-card{
+    opacity: 1;
+    transition-property: opacity;
+    transition-duration: 1s;
+}
+.ant-card:hover{
+    opacity: 0.6;
+}

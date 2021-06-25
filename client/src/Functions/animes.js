@@ -30,6 +30,31 @@ export function getTrending(limit){
         }
     })
 }
+export function searchAnime(name){
+    return checkToken().then(data => {
+        if (data.status === 1){
+            clearToken();
+        }else{
+            const instance = axios.create({
+                baseURL: ApiIP,
+                method: "get",
+                timeout: 30000,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': `${data.token}`
+                }
+            });
+            return instance
+                .get(`/anime/search/${name}`)
+                .then((response) => {
+                    return response;
+                })
+                .catch((error) => {
+                    return error.response;
+                });
+        }
+    })
+}
 export function getWatched(){
     return checkToken().then(data => {
         if (data.status === 1){

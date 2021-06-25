@@ -21,6 +21,8 @@ import GenerateKey from "../GenerateKey/GenerateKey";
 import ManageKeys from "../ManageKeys/ManageKeys";
 import { useHistory } from "react-router-dom";
 import ManageUsers from "../ManageUsers/ManageUsers";
+import { message, Button } from 'antd';
+import Search from "../Search/Search";
 const { Content, Sider } = Layout;
 const { SubMenu } = Menu;
 
@@ -29,9 +31,23 @@ export default function Home() {
     // const { id } = useParams();
     let history = useHistory();
     function goHome(){
+        setAnimeToDisp({
+            anime: null,
+            status: false
+        })
         history.push("/home");
     }
     const [collapsed, setCollapsed] = useState(false)
+    const [animeToDisp, setAnimeToDisp] = useState({
+        anime: null,
+        status: false
+    })
+    const pathname = window.location.pathname
+    const decodedPath = decodeURI(pathname).split("/")
+    if (decodedPath[1] && decodedPath[2] && decodedPath[1].toString() === "anime" && !animeToDisp.status){
+        message.info("Anime Searched : " + decodedPath[2]);
+        setAnimeToDisp({anime: <div>{decodedPath[2]}  to disp</div>, status: true })
+    }
     const [itemToDisplay, setItemToDisplay] = useState(<Trending/>);
     function collapse(){
         if (collapsed === false){
@@ -49,7 +65,6 @@ export default function Home() {
     useEffect(() => {
         getUserInfos()
             .then(data => {
-                console.log(data.data);
                 setUserRequest({
                     loading: false,
                     user: data.data,
@@ -71,7 +86,10 @@ export default function Home() {
                     }}>
                         Trending
                     </Menu.Item>
-                    <Menu.Item style={{ color:"white"}} key="2" icon={<SearchOutlined style={{fontSize:"100%"}}/>}>
+                    <Menu.Item style={{ color:"white"}} key="2" icon={<SearchOutlined style={{fontSize:"100%"}}/>} onClick={() => {
+                        setItemToDisplay(<Search/>)
+                        goHome();
+                    }}>
                         Search
                     </Menu.Item>
                     <Menu.Item style={{ color:"white"}} key="3" icon={<EyeOutlined style={{fontSize:"100%"}}/>} onClick={() => {
@@ -111,7 +129,8 @@ export default function Home() {
             </Sider>
             <Layout className="site-layout">
                 <Content style={{padding:"2%" }}>
-                    {itemToDisplay}
+
+                    {animeToDisp.status ? (animeToDisp.anime) : (itemToDisplay)}
                 </Content>
                 {/*<Footer style={{ textAlign: 'center' }}>Design ©2021 Created by AlexArtaud-Dev</Footer>*/}
             </Layout>
