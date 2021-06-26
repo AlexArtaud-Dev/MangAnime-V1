@@ -46,7 +46,6 @@ export default function Home() {
     const pathname = window.location.pathname
     const decodedPath = decodeURI(pathname).split("/")
     if (decodedPath[1] && decodedPath[2] && decodedPath[1].toString() === "anime" && !animeToDisp.status){
-        message.info("Anime Searched : " + decodedPath[2]);
         setAnimeToDisp({anime: <AnimeToDisp animeName={decodedPath[2]}/>, status: true })
     }
     const [itemToDisplay, setItemToDisplay] = useState(<Trending/>);
