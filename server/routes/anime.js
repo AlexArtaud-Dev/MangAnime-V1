@@ -401,6 +401,8 @@ router.post('/:url', verify, async (req, res) => {
  *      responses:
  *         '200':
  *           description: Successfull Request
+ *         '202':
+ *           description: Successfull Request but won't apply
  *         '401':
  *           description: Unauthorized
  *         '500':
@@ -409,7 +411,11 @@ router.post('/:url', verify, async (req, res) => {
 router.patch('/up', verify, async (req, res) => {
     await upAnime(req.body.name, req.body.url, req.user._id)
         .then(data => {
-            res.status(200).send(data.message)
+            if (data.message === "Success of creating and upvoting the anime"){
+                res.status(200).send(data.message)
+            }else{
+                res.status(202).send(data.message)
+            }
         })
         .catch(error => {
             res.status(500).send(error)

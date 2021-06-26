@@ -23,10 +23,10 @@ export default function Search() {
         if (!searched.status){
             setSearched({
                 status: true,
-                component: <Spin size="large"/>
+                component: <div style={{width:"100%"}}><p style={{textAlign:"center", color:"white", fontSize:"100%"}}>If nothing happens, restart the research</p><Spin size="large"/></div>
             })
         }
-        setSearchRequest({loading: true})
+        setSearchRequest({loading: true, search: null})
         searchAnime(name).then(data => {
             console.log(data)
             setSearchRequest({
@@ -52,7 +52,7 @@ export default function Search() {
                     <Button type="primary" icon={<SearchOutlined />} size="large" onClick={() => onSearch(searchValue)}/>
                 </Input.Group>
                 {loading ? (
-                    <div style={{textAlign:"center", marginTop:"22%", fontSize:"200%"}}>
+                    <div style={{textAlign:"center", marginTop:"19%"}}>
                         {searched.component}
                     </div>
                 ):(

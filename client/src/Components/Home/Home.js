@@ -23,6 +23,7 @@ import { useHistory } from "react-router-dom";
 import ManageUsers from "../ManageUsers/ManageUsers";
 import { message, Button } from 'antd';
 import Search from "../Search/Search";
+import AnimeToDisp from "../AnimeToDisp/AnimeToDisp";
 const { Content, Sider } = Layout;
 const { SubMenu } = Menu;
 
@@ -46,7 +47,7 @@ export default function Home() {
     const decodedPath = decodeURI(pathname).split("/")
     if (decodedPath[1] && decodedPath[2] && decodedPath[1].toString() === "anime" && !animeToDisp.status){
         message.info("Anime Searched : " + decodedPath[2]);
-        setAnimeToDisp({anime: <div>{decodedPath[2]}  to disp</div>, status: true })
+        setAnimeToDisp({anime: <AnimeToDisp animeName={decodedPath[2]}/>, status: true })
     }
     const [itemToDisplay, setItemToDisplay] = useState(<Trending/>);
     function collapse(){
@@ -78,7 +79,7 @@ export default function Home() {
     return(
         <Layout style={{ minHeight: '100vh'}}>
             <Sider collapsible collapsed={collapsed} onCollapse={collapse} style={{ backgroundColor:"#100024", boxShadow:" 1px 0px 2px #1d0040" }}>
-                <div className="logo" style={{fontSize:"200%", textAlign:"center", fontWeight:"bold", paddingTop:"10%",paddingBottom:"10%", borderBottom:"7px solid black", backgroundColor:"#1d0040"}}>{!collapsed ? "MangAnime" : "M"}</div>
+                <div className="logo" style={{fontSize:"200%", textAlign:"center", fontWeight:"bold", paddingTop:"10%",paddingBottom:"10%", borderBottom:"7px solid black", backgroundColor:"#1d0040", cursor:"pointer" }} onClick={goHome}>{!collapsed ? "MangAnime" : "M"}</div>
                 <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
                     <Menu.Item style={{ color:"white"}} key="1" icon={<RiseOutlined style={{fontSize:"100%"}}/>} onClick={() => {
                         setItemToDisplay(<Trending/>)
@@ -129,7 +130,6 @@ export default function Home() {
             </Sider>
             <Layout className="site-layout">
                 <Content style={{padding:"2%" }}>
-
                     {animeToDisp.status ? (animeToDisp.anime) : (itemToDisplay)}
                 </Content>
                 {/*<Footer style={{ textAlign: 'center' }}>Design ©2021 Created by AlexArtaud-Dev</Footer>*/}
