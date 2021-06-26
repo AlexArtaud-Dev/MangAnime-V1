@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import "primereact/resources/primereact.min.css"
 import "./AnimeToDisp.css"
-import {getAnimeByName, upvoteAnime} from "../../Functions/animes";
+import {getAnimeByName, getEpisode, upvoteAnime} from "../../Functions/animes";
 import {Button, Carousel, Image, message, Rate, Spin} from 'antd';
 import Title from "antd/es/typography/Title";
 import {ScrollPanel} from "primereact/scrollpanel";
-import {ArrowUpOutlined, EditOutlined, TeamOutlined} from "@ant-design/icons";
+import {ArrowUpOutlined, DownloadOutlined, EditOutlined, LinkOutlined, TeamOutlined} from "@ant-design/icons";
 import { Select } from 'antd';
 import Modal from "antd/es/modal/Modal";
 import AnimeToDispCharacterCard from "./AnimeToDispCharacterCard";
@@ -20,9 +20,18 @@ export default function AnimeToDisp({animeName}) {
     })
     const [modals, setModals] = useState({
         modalOne : false,
-        modalTwo: false
+        modalTwo: false,
+        modalThree: false,
+        modalFour: false
+    })
+    const [animeEpisode, setAnimeEpisode] = useState({
+        streamStatus: false,
+        streamEpisodes: null,
+        downloadStatus: false,
+        downloadEpisodes: null
     })
     const [streaming, setStreaming] = useState(1)
+    const [download, setDownload] = useState(1)
     function upvoteAnimeFunc(name, url){
         if (!name) {
             message.info("Missing Anime Name to Upvote");
@@ -43,7 +52,43 @@ export default function AnimeToDisp({animeName}) {
     }
     function handleStreamChange(value){
         setStreaming(value);
-        console.log(value);
+    }
+    function handleDownloadChange(value){
+        setDownload(value);
+    }
+    function resetAnime(){
+        setAnimeEpisode({
+            streamStatus: false,
+            streamEpisodes: null,
+            downloadStatus: false,
+            downloadEpisodes: null
+        })
+    }
+    function getStreamingLinks(name, episode){
+        setAnimeEpisode({streamStatus: true});
+        setModals({modalThree : true});
+        getEpisode(name, episode).then(data => {
+            if(data.status === 200){
+                setAnimeEpisode({streamStatus: false, streamEpisodes: data.data})
+            }else{
+                setAnimeEpisode({streamStatus: false, streamEpisodes: []})
+            }
+        }).catch(error => {
+            console.log(error);
+        })
+    }
+    function getDownloadLinks(name, episode){
+        setAnimeEpisode({downloadStatus: true});
+        setModals({modalFour : true});
+        getEpisode(name, episode).then(data => {
+            if(data.status === 200){
+                setAnimeEpisode({downloadStatus: false, downloadEpisodes: data.data})
+            }else{
+                setAnimeEpisode({downloadStatus: false, downloadEpisodes: []})
+            }
+        }).catch(error => {
+            console.log(error);
+        })
     }
     useEffect(() => {
         getAnimeByName(animeName).then(data => {
@@ -60,6 +105,8 @@ export default function AnimeToDisp({animeName}) {
     const characterArray = [];
     const staffArray = [];
     const episodeArray = [];
+    const streamingArray = [];
+    const downloadArray = [];
     if (content){
         if (content.characters && content.characters.length !== 0){
             content.characters.forEach(character => {
@@ -75,6 +122,16 @@ export default function AnimeToDisp({animeName}) {
             for (let i = 1; i <= content.episodesNumber; i++) {
                 episodeArray.push(<Option value={i}>Episode {i}</Option>)
             }
+        }
+        if (animeEpisode.streamEpisodes){
+            animeEpisode.streamEpisodes.videoLinks.streamingLinks.forEach(link => {
+                streamingArray.push(<Button type="primary" style={{cursor:"pointer", width:"30%", textAlign:"center", fontSize:"120%", marginBottom:"3%", paddingBottom:"6%"}} onClick={() => {window.open(link.url,'_blank')}}>{link.server}</Button>)
+            })
+        }
+        if (animeEpisode.downloadEpisodes){
+            animeEpisode.downloadEpisodes.videoLinks.downloadLinks.forEach(link => {
+                downloadArray.push(<Button type="primary" style={{cursor:"pointer", width:"30%", textAlign:"center", fontSize:"120%", marginBottom:"3%", paddingBottom:"6%"}} onClick={() => {window.open(link.url,'_blank')}}>{link.server}</Button>)
+            })
         }
     }
 
@@ -169,11 +226,59 @@ export default function AnimeToDisp({animeName}) {
                         </div>
                     </div>
                 </div>
-                    <div style={{width:"89%", height:"20vh", marginTop:"3%", marginLeft:"2%", borderTop:"2px solid #a02669"}}>
-                        <Title style={{color:"#a02669", marginBottom:"0%", marginTop:"1%", marginLeft:"2%"}} level={1} >Episode Stream</Title>
-                        <Select size="large" defaultValue="Episode 1" onChange={handleStreamChange} style={{ width: 320, marginLeft:"2%", marginTop:"1%" }}>
-                            {episodeArray}
-                        </Select>
+                    <div style={{width:"89%", height:"20vh", marginTop:"3%", marginLeft:"2%", borderTop:"2px solid #a02669", display:"flex",flexDirection:"row"}}>
+                        <Modal title="Anime Streaming Links" centered visible={modals.modalThree} okText="Close" onCancel={() => {resetAnime();setModals({modalThree: false})}} onOk={() => {resetAnime();setModals({modalThree: false})}}>
+                            {animeEpisode.streamStatus ? (
+                                <div>
+                                    <Title style={{color:"#a02669", marginBottom:"4%",textAlign:"center"}} level={4} >Scrapping NASA Database</Title>
+                                    <Spin style={{width:"100%", textAlign:"center"}} size="large"/>
+                                </div>
+                            ) : (
+                                <div style={{display:"flex",flexDirection:"row",flexWrap:"wrap", justifyContent:"space-between"}}>
+                                    {streamingArray}
+                                </div>
+                            )}
+                        </Modal>
+                        <Modal title="Anime Download Links" centered visible={modals.modalFour} okText="Close" onCancel={() => {resetAnime();setModals({modalFour: false})}} onOk={() => {resetAnime();setModals({modalFour: false})}}>
+                            {animeEpisode.downloadStatus ? (
+                                <div>
+                                    <Title style={{color:"#a02669", marginBottom:"4%",textAlign:"center"}} level={4} >Scrapping NASA Database</Title>
+                                    <Spin style={{width:"100%", textAlign:"center"}} size="large"/>
+                                </div>
+                            ) : (
+                                <div style={{width:"100%"}}>
+                                    {downloadArray.length === 0 ? (
+                                        <Title style={{color:"#a02669"}} level={1} >Cloudflare Error (Fix Soon)</Title>
+                                    ) : (
+                                        <div style={{display:"flex",flexDirection:"row",flexWrap:"wrap", justifyContent:"space-between"}}>
+                                            {streamingArray}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </Modal>
+                        <div style={{width:"46%", marginLeft:"4%"}}>
+                            <Title style={{color:"#a02669", marginBottom:"0%", marginTop:"4%", marginLeft:"2%"}} level={1} >Episode Stream</Title>
+                            <div style={{marginLeft:"2%", width:"100%"}}>
+                                <Select size="large" defaultValue={1} onChange={handleStreamChange} style={{ width: 320, marginLeft:"2%", marginTop:"1%" }}>
+                                    {episodeArray}
+                                </Select>
+                                <Button style={{marginLeft:"2%", width:"15%"}} type="primary" icon={<LinkOutlined />} size="large" onClick={() => getStreamingLinks(content.name, streaming)}>
+                                    Get Links
+                                </Button>
+                            </div>
+                        </div>
+                        <div style={{width:"43%", marginLeft:"7%"}}>
+                            <Title style={{color:"#a02669", marginBottom:"0%", marginTop:"4%", marginLeft:"2%"}} level={1} >Episode Download</Title>
+                            <div style={{marginLeft:"2%", width:"100%"}}>
+                                <Select size="large" defaultValue={1} onChange={handleDownloadChange} style={{ width: 320, marginLeft:"2%", marginTop:"1%" }}>
+                                    {episodeArray}
+                                </Select>
+                                <Button style={{marginLeft:"2%", width:"17%"}} type="primary" icon={<LinkOutlined />} size="large" onClick={() => getDownloadLinks(content.name, streaming)}>
+                                    Get Links
+                                </Button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

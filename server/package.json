@@ -16,6 +16,7 @@
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "chromium": "^3.0.2",
+    "cloudscraper": "^1.5.1",
     "cors": "^2.8.5",
     "cpu-percentage": "^1.0.3",
     "dotenv": "^10.0.0",
@@ -32,6 +33,7 @@
     "process-cpu-usage": "^0.1.2",
     "puppeteer": "^10.0.0",
     "qrcode-generator": "^1.4.4",
+    "request": "^2.88.2",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.1.6",
     "uuid-apikey": "^1.5.2"
