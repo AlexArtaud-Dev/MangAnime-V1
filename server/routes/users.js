@@ -328,7 +328,10 @@ router.patch('/', verify, async(req, res) => {
     const { error } = userUpdateValidation(req.body);
     if (error) return res.status(400).send({ Error: error.details[0].message });
 
-
+    if (req.body.email && req.body.email !== userToUpdate.email){
+        const checkEmailExistence = await User.findOne({email: req.body.email});
+        if (checkEmailExistence) return res.status(401).send("This email already exist");
+    }
     const updated = await userToUpdate.updateOne({
         nickname: req.body.nickname,
         email: req.body.email,

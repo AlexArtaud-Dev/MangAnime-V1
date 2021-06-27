@@ -7,6 +7,7 @@ export default function SearchCard({anime}) {
     let history = useHistory();
 
     function goToAnime(name){
+        name = name.replaceAll("/","%2F")
         history.push(`/anime/${name}`);
     }
 

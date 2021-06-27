@@ -28,18 +28,18 @@ export default function Register() {
             }else{
                 if (!keyRegex.test(values.key)){
                     message
-                        .loading('Trying to log you in..', 0.5)
+                        .loading('Trying to register..', 0.5)
                         .then(() => message.warning("Wrong invitation key format", 3))
                 }else{
                     if (values.password !== values.passwordConfirmation){
                         message
-                            .loading('Trying to log you in..', 0.5)
+                            .loading('Trying to register..', 0.5)
                             .then(() => message.warning("Your two passwords does not match", 3))
                     }else{
                         if (result){
                             if (result.status === 200){
                                 message
-                                    .loading('Trying to log you in..', 1)
+                                    .loading('Trying to register..', 1)
                                     .then(() => message.success(result.message, 3))
                                     .then(() => {
                                         message.info('Redirecting...', 1);
@@ -47,7 +47,7 @@ export default function Register() {
                                     });
                             }else{
                                 message
-                                    .loading('Trying to log you in..', 1)
+                                    .loading('Trying to register..', 1)
                                     .then(() => message.error(result.message, 3))
                             }
                         }

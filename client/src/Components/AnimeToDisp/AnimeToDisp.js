@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import "primereact/resources/primereact.min.css"
 import "./AnimeToDisp.css"
 import {getAnimeByName, getEpisode, upvoteAnime} from "../../Functions/animes";
-import {Button, Carousel, Image, message, Rate, Spin} from 'antd';
+import {Button, Carousel, Image, message, Rate, Spin, Tooltip} from 'antd';
 import Title from "antd/es/typography/Title";
 import {ScrollPanel} from "primereact/scrollpanel";
 import {ArrowUpOutlined, DownloadOutlined, EditOutlined, LinkOutlined, TeamOutlined} from "@ant-design/icons";
@@ -169,7 +169,14 @@ export default function AnimeToDisp({animeName}) {
                     </div>
                     <div style={{width:"65%"}}>
                         <div style={{display:"flex", flexDirection:"row", width:"100%", justifyContent:"space-between"}}>
-                            <Title style={{color:"#a02669", marginBottom:"0%"}} level={1} >{content.name} ({content.diffusionType} - {content.status})</Title>
+                            {content.name.length > 35 ? (
+                                <Tooltip placement="bottom" title={`${content.name} (${content.diffusionType} - ${content.status}`}>
+                                    <Title style={{color:"#a02669", marginBottom:"0%"}} level={1} >{content.name.slice(0,50)}...     </Title>
+                                </Tooltip>
+                            ) : (
+                                <Title style={{color:"#a02669", marginBottom:"0%"}} level={1} >{content.name} ({content.diffusionType} - {content.status})</Title>
+                            )}
+
                             <Button style={{width:"15%", fontSize:"130%", paddingBottom:"2.5%"}} type="primary" shape="round" icon={<ArrowUpOutlined />} size="large" onClick={() => upvoteAnimeFunc(content.name, content.url)}>Upvote</Button>
                         </div>
 

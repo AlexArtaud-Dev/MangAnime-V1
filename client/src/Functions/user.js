@@ -164,3 +164,33 @@ export function deleteUserOrAdmin(userID, ownerPassword){
         }
     })
 }
+export function updateUser(nickname, email, password){
+    return checkToken().then(data => {
+        if (data.status === 1){
+            clearToken();
+        }else{
+            const instance = axios.create({
+                baseURL: ApiIP,
+                method: "patch",
+                timeout: 30000,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': `${data.token}`
+                }
+            });
+            const body = {
+                nickname: nickname,
+                email: email,
+                password: password
+            }
+            return instance
+                .patch(`/users/`, body)
+                .then((response) => {
+                    return response;
+                })
+                .catch((error) => {
+                    return error.response;
+                });
+        }
+    })
+}

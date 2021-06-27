@@ -25,6 +25,7 @@ import { message, Button } from 'antd';
 import Search from "../Search/Search";
 import AnimeToDisp from "../AnimeToDisp/AnimeToDisp";
 import QrCodeDisplay from "../QrCodeDisplay/QrCodeDisplay";
+import UserInfos from "../UserInfos/UserInfos";
 const { Content, Sider } = Layout;
 const { SubMenu } = Menu;
 
@@ -47,6 +48,7 @@ export default function Home() {
     const pathname = window.location.pathname
     const decodedPath = decodeURI(pathname).split("/")
     if (decodedPath[1] && decodedPath[2] && decodedPath[1].toString() === "anime" && !animeToDisp.status){
+        console.log(decodedPath[2]);
         setAnimeToDisp({anime: <AnimeToDisp animeName={decodedPath[2]}/>, status: true })
     }
     const [itemToDisplay, setItemToDisplay] = useState(<Trending/>);
@@ -122,7 +124,10 @@ export default function Home() {
                         <div/>
                     )}
                     <SubMenu style={{ color:"white"}} key="sub2" icon={<UserOutlined style={{fontSize:"100%"}}/>} title="Account">
-                        <Menu.Item style={{ color:"white"}} key="9" icon={<SafetyOutlined style={{fontSize:"90%"}}/>}>Security</Menu.Item>
+                        <Menu.Item style={{ color:"white"}} key="9" icon={<SafetyOutlined style={{fontSize:"90%"}}/>} onClick={() => {
+                            setItemToDisplay(<UserInfos/>)
+                            goHome();
+                        }}>Security</Menu.Item>
                         <Menu.Item style={{ color:"white"}} key="10" icon={<ExpandOutlined style={{fontSize:"90%"}}/>} onClick={() => {
                             setItemToDisplay(<QrCodeDisplay/>)
                             goHome();
