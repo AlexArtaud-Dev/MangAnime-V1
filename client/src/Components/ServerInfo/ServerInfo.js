@@ -56,13 +56,10 @@ export default function ServerInfo() {
                         <Progress type="dashboard" trailColor="#2c0061" strokeColor={{'0%': '#ff0000', '100%': '#a02669'}}  percent={infos.ram} width="200px" strokeWidth={10} />
                     </div>
                 </div>
-                <div style={{display:"flex", flexDirection:"row", width:"100%"}}>
-                    <div style={{width:"30%", backgroundColor:"#100024", height:"44vh", marginRight:"10%", marginLeft:"15%", borderRadius:"45px", display:"flex",flexDirection:"column",justifyContent:"center", alignItems:"center", border:"3px #15002f", boxShadow:"3px 3px 3px 3px #15002f"}}>
+                <div style={{display:"flex", flexDirection:"row", width:"100%", justifyContent:"center"}}>
+                    <div style={{width:"30%", backgroundColor:"#100024", height:"44vh", marginRight:"10%", marginLeft:"10%", borderRadius:"45px", display:"flex",flexDirection:"column",justifyContent:"center", alignItems:"center", border:"3px #15002f", boxShadow:"3px 3px 3px 3px #15002f"}}>
                         <Title level={1}>Time Elapsed</Title>
                         <Title level={1}>{infos.elapsed}</Title>
-                    </div>
-                    <div style={{width:"30%", backgroundColor:"#100024", height:"44vh", marginRight:"5%", borderRadius:"45px", display:"flex",flexDirection:"column",justifyContent:"center", alignItems:"center", border:"3px #15002f", boxShadow:"3px 3px 3px 3px #15002f"}}>
-                        4
                     </div>
                 </div>
             </div>

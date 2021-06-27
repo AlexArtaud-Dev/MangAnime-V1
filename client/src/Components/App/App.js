@@ -8,6 +8,7 @@ import LoginPage from "../../Pages/LoginPage/LoginPage";
 import {checkToken} from "../../Functions/auth";
 import HomePage from "../../Pages/HomePage/HomePage";
 import RegisterPage from "../../Pages/RegisterPage/RegisterPage";
+import QrLoginPage from "../../Pages/QrLoginPage/QrLoginPage";
 
 function App() {
     const [logged, setLogged] = useState({
@@ -37,6 +38,9 @@ function App() {
                           <Route exact path="/home">
                               <HomeNotLoggedPage/>
                           </Route>
+                          <Route exact path="/qrlogin">
+                              <QrLoginPage/>
+                          </Route>
                           <Route exact path="/login">
                               <LoginPage/>
                           </Route>
@@ -52,6 +56,9 @@ function App() {
               ) : (
                   <Router>
                       <Switch>
+                          <Route exact path="/qrlogin">
+                              <Redirect to="/home"/>
+                          </Route>
                           <Route exact path="/home">
                               <HomePage/>
                           </Route>

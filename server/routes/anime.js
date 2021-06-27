@@ -12,6 +12,7 @@ const mongoose = require("mongoose");
 const Anime = require("anime-scraper").Anime;
 
 
+
 /**
  * @swagger
  * /anime/search/{name}:
@@ -41,7 +42,15 @@ router.get('/search/:name', verify, async (req, res) => {
     if (!req.params.name) return res.status(400).send("No name given.")
     const cache = await SearchCache.findOne({name: req.params.name.toLowerCase()});
     if (cache){
-        res.status(200).send(cache.result);
+        let arrayCache = cache.result;
+        arrayCache.sort(function(a, b){
+            let firstLetterOne = a.name[0].toLowerCase();
+            let firstLetterTwo = b.name[0].toLowerCase();
+            if (firstLetterOne < firstLetterTwo) return -1;
+            if (firstLetterOne > firstLetterTwo) return 1;
+            return 0;
+        })
+        res.status(200).send(arrayCache);
     }else{
         await searchAnime(req.params.name)
             .then(async value => {
@@ -59,6 +68,13 @@ router.get('/search/:name', verify, async (req, res) => {
                     animeSearchArray.push(newAnime);
                 }
                 if (animeSearchArray.length !== 0){
+                    animeSearchArray.sort(function(a, b){
+                        let firstLetterOne = a.name[0].toLowerCase();
+                        let firstLetterTwo = b.name[0].toLowerCase();
+                        if (firstLetterOne < firstLetterTwo) return -1;
+                        if (firstLetterOne > firstLetterTwo) return 1;
+                        return 0;
+                    })
                     const toCache = new SearchCache({
                         name: req.params.name.toLowerCase(),
                         result: animeSearchArray
@@ -114,6 +130,13 @@ router.get('/popular/:limit', verify, async (req, res) => {
         }
         topAnimesArray.push(object);
     })
+    topAnimesArray.sort(function(a, b){
+        let firstLetterOne = a.name[0].toLowerCase();
+        let firstLetterTwo = b.name[0].toLowerCase();
+        if (firstLetterOne < firstLetterTwo) return -1;
+        if (firstLetterOne > firstLetterTwo) return 1;
+        return 0;
+    })
     res.status(200).send(topAnimesArray)
 })
 
@@ -142,6 +165,13 @@ router.get('/watched', verify, async (req, res) => {
     const user = await User.findOne({_id: req.user._id});
     if (!user) return res.status(400).send("No account corresponding to this token in the database");
     if (user.watchedAnimes.length === 0) return res.status(404).send("Nothing Found");
+    user.watchedAnimes.sort(function(a, b){
+        let firstLetterOne = a.name[0].toLowerCase();
+        let firstLetterTwo = b.name[0].toLowerCase();
+        if (firstLetterOne < firstLetterTwo) return -1;
+        if (firstLetterOne > firstLetterTwo) return 1;
+        return 0;
+    })
     res.status(200).send(user.watchedAnimes);
 })
 

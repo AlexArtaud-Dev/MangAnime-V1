@@ -58,16 +58,18 @@ router.get('/all',verify, verifyAdmin, async(req, res) => {
     const keysArrays = [];
     for (let i=0; i < keys.length; i++) {
         const user = await User.findOne({_id: keys[i].creatorID})
-        const modifiedKey = {
-            _id: keys[i]._id,
-            APIKEY: uuidAPIKey.toAPIKey(keys[i].UUID),
-            UUID: keys[i].UUID,
-            creationDate: keys[i].creationDate,
-            expirationDate: keys[i].expirationDate,
-            creatorID: keys[i].creatorID,
-            creatorName: user.nickname
-        };
-        keysArrays.push(modifiedKey);
+        if (user){
+            const modifiedKey = {
+                _id: keys[i]._id,
+                APIKEY: uuidAPIKey.toAPIKey(keys[i].UUID),
+                UUID: keys[i].UUID,
+                creationDate: keys[i].creationDate,
+                expirationDate: keys[i].expirationDate,
+                creatorID: keys[i].creatorID,
+                creatorName: user.nickname
+            };
+            keysArrays.push(modifiedKey);
+        }
     }
     res.status(200).send(keysArrays)
 })

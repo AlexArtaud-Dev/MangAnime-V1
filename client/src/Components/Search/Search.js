@@ -23,16 +23,17 @@ export default function Search() {
         if (!searched.status){
             setSearched({
                 status: true,
-                component: <div style={{width:"100%"}}><p style={{textAlign:"center", color:"white", fontSize:"100%"}}>If nothing happens, restart the research</p><Spin size="large"/></div>
+                component: <div style={{width:"100%"}}><p style={{textAlign:"center", color:"white", fontSize:"150%"}}>If nothing happens, restart the research</p><Spin size="large"/></div>
             })
         }
         setSearchRequest({loading: true, search: null})
         searchAnime(name).then(data => {
-            console.log(data)
-            setSearchRequest({
-                loading: false,
-                search: data.data
-            })
+            if (data){
+                setSearchRequest({
+                    loading: false,
+                    search: data.data
+                })
+            }
         }).catch(error => {
             console.log(error)
         })

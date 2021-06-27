@@ -24,6 +24,7 @@ import ManageUsers from "../ManageUsers/ManageUsers";
 import { message, Button } from 'antd';
 import Search from "../Search/Search";
 import AnimeToDisp from "../AnimeToDisp/AnimeToDisp";
+import QrCodeDisplay from "../QrCodeDisplay/QrCodeDisplay";
 const { Content, Sider } = Layout;
 const { SubMenu } = Menu;
 
@@ -122,7 +123,10 @@ export default function Home() {
                     )}
                     <SubMenu style={{ color:"white"}} key="sub2" icon={<UserOutlined style={{fontSize:"100%"}}/>} title="Account">
                         <Menu.Item style={{ color:"white"}} key="9" icon={<SafetyOutlined style={{fontSize:"90%"}}/>}>Security</Menu.Item>
-                        <Menu.Item style={{ color:"white"}} key="10" icon={<ExpandOutlined style={{fontSize:"90%"}}/>}>QR Login</Menu.Item>
+                        <Menu.Item style={{ color:"white"}} key="10" icon={<ExpandOutlined style={{fontSize:"90%"}}/>} onClick={() => {
+                            setItemToDisplay(<QrCodeDisplay/>)
+                            goHome();
+                        }}>QR Login</Menu.Item>
                         <Menu.Item style={{ color:"white"}} key="11" icon={<UserOutlined style={{fontSize:"90%"}}/>} onClick={logout}>Disconnect</Menu.Item>
                     </SubMenu>
                 </Menu>

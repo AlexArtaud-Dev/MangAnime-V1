@@ -38,7 +38,7 @@ export function searchAnime(name){
             const instance = axios.create({
                 baseURL: ApiIP,
                 method: "get",
-                timeout: 30000,
+                timeout: 120000,
                 headers: {
                     'Content-Type': 'application/json',
                     'auth-token': `${data.token}`

@@ -204,7 +204,7 @@ router.get('/generate/qr', verify, async(req, res) => {
     const typeNumber = 0;
     const errorCorrectionLevel = 'H';
     const qr = qrcode(typeNumber, errorCorrectionLevel);
-    qr.addData(`https://localhost:3000/qr/login/${req.header("auth-token")}`);
+    qr.addData(`https://www.manganimes.me/qr/login/${req.header("auth-token")}`);
     qr.make();
     const QRCodeBase64 = qr.createImgTag();
     res.status(200).send(QRCodeBase64.split("\"")[1]);

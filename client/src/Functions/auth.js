@@ -112,6 +112,31 @@ export function mangAnimeLogin(email, password, remember){
             return {status: error.response.status, message: error.response.data.error}
         });
 }
+export function getQRCode(){
+    return checkToken().then(data => {
+        if (data.status === 1){
+            clearToken();
+        }else{
+            const instance = axios.create({
+                baseURL: ApiIP,
+                method: "get",
+                timeout: 120000,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': `${data.token}`
+                }
+            });
+            return instance
+                .get(`/user/generate/qr`)
+                .then((response) => {
+                    return response;
+                })
+                .catch((error) => {
+                    return error.response;
+                });
+        }
+    })
+}
 export function logout(){
     localStorage.removeItem("_to")
     localStorage.removeItem("_ex")
