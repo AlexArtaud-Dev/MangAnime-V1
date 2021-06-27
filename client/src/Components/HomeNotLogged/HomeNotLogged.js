@@ -7,7 +7,7 @@ import {Typography, Row, Button, Modal} from 'antd';
 import { GithubOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 const axios = require("axios")
-const {IP} = require("../../config")
+const {IP, DNS} = require("../../config")
 
 export default function HomeNotLogged() {
     let history = useHistory();
@@ -97,7 +97,7 @@ export default function HomeNotLogged() {
 
 
     return(
-       <div onLoad={() => localStorage.removeItem("noLoading")} style={!loading ? {width:"100%",height:"100vh", backgroundImage: `url('${IP}img/wavy-magenta-by-nouridio.svg')`, backgroundPosition:"bottom",backgroundRepeat:"no-repeat", backgroundAttachment:"fixed", backgroundSize:"2400px"} : {}}>
+       <div onLoad={() => localStorage.removeItem("noLoading")} style={!loading ? {width:"100%",height:"100vh", backgroundImage: `url('${DNS}img/wavy-magenta-by-nouridio.svg')`, backgroundPosition:"bottom",backgroundRepeat:"no-repeat", backgroundAttachment:"fixed", backgroundSize:"2400px"} : {}}>
            {loading ? (
                <div style={{width:"100%",display:"flex", justifyContent:"center"}}>
                    <img style={{marginTop:"9%"}} className="logo" src={logo} alt={"MangAnime Logo"}/>
@@ -134,7 +134,7 @@ export default function HomeNotLogged() {
                           <Button style={{width:"38%", paddingBottom:"3.3%", fontSize:"140%", marginLeft:"4%"}} type="primary" shape="round" size={'large'} onClick={login}>Login</Button>
                       </div>
                       <div style={{marginTop:"5%", width:"50%", display:"flex", justifyContent:"center"}}>
-                          <img style={{width:"60%"}} src={shibi} alt={"MangAnime Shibi"} onClick={() => setSecret(secret+1)}/>
+                          <img style={{width:"60%"}} src={`${DNS}img/saberShibi.png`} alt={"MangAnime Shibi"} onClick={() => setSecret(secret+1)}/>
                       </div>
                   </div>
               </div>
