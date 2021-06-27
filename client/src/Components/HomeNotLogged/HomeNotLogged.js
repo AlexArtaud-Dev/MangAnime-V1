@@ -134,7 +134,7 @@ export default function HomeNotLogged() {
                           <Button style={{width:"38%", paddingBottom:"3.3%", fontSize:"140%", marginLeft:"4%"}} type="primary" shape="round" size={'large'} onClick={login}>Login</Button>
                       </div>
                       <div style={{marginTop:"5%", width:"50%", display:"flex", justifyContent:"center"}}>
-                          <img style={{width:"60%"}} src={`${DNS}img/saberShibi.png`} alt={"MangAnime Shibi"} onClick={() => setSecret(secret+1)}/>
+                          <img style={{width:"60%"}} src={`${DNS}img/saberShibiFull.png`} alt={"MangAnime Shibi"} onClick={() => setSecret(secret+1)}/>
                       </div>
                   </div>
               </div>
