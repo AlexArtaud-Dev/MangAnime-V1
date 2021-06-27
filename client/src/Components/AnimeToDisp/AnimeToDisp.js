@@ -13,7 +13,7 @@ import AnimeToDispStaffCard from "./AnimeToDispStaffCard";
 import {Option} from "antd/es/mentions";
 
 export default function AnimeToDisp({animeName}) {
-
+    animeName = animeName.replaceAll("%2F", "/");
     const [anime, setAnime] = useState({
         loading: true,
         content: null
@@ -123,12 +123,12 @@ export default function AnimeToDisp({animeName}) {
                 episodeArray.push(<Option value={i}>Episode {i}</Option>)
             }
         }
-        if (animeEpisode.streamEpisodes){
+        if (animeEpisode.streamEpisodes && animeEpisode.streamEpisodes.length !== 0){
             animeEpisode.streamEpisodes.videoLinks.streamingLinks.forEach(link => {
                 streamingArray.push(<Button type="primary" style={{cursor:"pointer", width:"30%", textAlign:"center", fontSize:"120%", marginBottom:"3%", paddingBottom:"6%"}} onClick={() => {window.open(link.url,'_blank')}}>{link.server}</Button>)
             })
         }
-        if (animeEpisode.downloadEpisodes){
+        if (animeEpisode.downloadEpisodes && animeEpisode.downloadEpisodes.length !== 0){
             animeEpisode.downloadEpisodes.videoLinks.downloadLinks.forEach(link => {
                 downloadArray.push(<Button type="primary" style={{cursor:"pointer", width:"30%", textAlign:"center", fontSize:"120%", marginBottom:"3%", paddingBottom:"6%"}} onClick={() => {window.open(link.url,'_blank')}}>{link.server}</Button>)
             })
@@ -169,7 +169,8 @@ export default function AnimeToDisp({animeName}) {
                     </div>
                     <div style={{width:"65%"}}>
                         <div style={{display:"flex", flexDirection:"row", width:"100%", justifyContent:"space-between"}}>
-                            {content.name.length > 35 ? (
+                            {console.log("CONTENT" + content)}
+                            {content && content.name.length > 35 ? (
                                 <Tooltip placement="bottom" title={`${content.name} (${content.diffusionType} - ${content.status}`}>
                                     <Title style={{color:"#a02669", marginBottom:"0%"}} level={1} >{content.name.slice(0,50)}...     </Title>
                                 </Tooltip>

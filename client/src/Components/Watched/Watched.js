@@ -19,15 +19,21 @@ export default function Watched() {
                     loading: false,
                     watched: data.data,
                 });
-            });
+            }).catch(error => {
+                console.log(error.message)
+        })
     }, []);
 
     const { loading, watched } = watchedRequest;
     const watchedArray = [];
     if (watched && watched.length !== 0){
-        watched.forEach(anime => {
-            watchedArray.push(<WatchedCard anime={anime}/>)
-        })
+        if (watched.toString() === "Nothing Found"){
+            watchedArray.push(<div style={{fontSize:"300%", color:"white", textAlign:"center", marginTop:"18%", marginLeft:"45%"}}>Nothing Found</div>)
+        }else{
+            watched.forEach(anime => {
+                watchedArray.push(<WatchedCard anime={anime}/>)
+            })
+        }
     }
     return(
             <div style={{color:"black"}}>

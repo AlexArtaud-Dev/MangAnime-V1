@@ -60,17 +60,21 @@ export function getAnimeByName(name){
         if (data.status === 1){
             clearToken();
         }else{
+            console.log("Function : " + name)
             const instance = axios.create({
                 baseURL: ApiIP,
-                method: "get",
+                method: "post",
                 timeout: 30000,
                 headers: {
                     'Content-Type': 'application/json',
                     'auth-token': `${data.token}`
                 }
             });
+            const body = {
+                name: name
+            }
             return instance
-                .get(`/anime/${name}`)
+                .post(`/anime/name`,body)
                 .then((response) => {
                     return response;
                 })
@@ -116,7 +120,7 @@ export function getEpisode(name, episode){
         }else{
             const instance = axios.create({
                 baseURL: ApiIP,
-                method: "get",
+                method: "post",
                 timeout: 30000,
                 headers: {
                     'Content-Type': 'application/json',
@@ -124,8 +128,11 @@ export function getEpisode(name, episode){
                 }
             });
 
+            const body = {
+                name: name
+            }
             return instance
-                .get(`/anime/${name}/${episode}`)
+                .post(`/anime/episode/${episode}`, body)
                 .then((response) => {
                     return response;
                 })

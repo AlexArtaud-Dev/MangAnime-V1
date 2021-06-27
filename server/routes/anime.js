@@ -177,19 +177,23 @@ router.get('/watched', verify, async (req, res) => {
 
 /**
  * @swagger
- * /anime/{name}:
- *   get:
+ * /anime/name:
+ *   post:
  *      description: Use to get all information about an anime
  *      tags:
  *          - Anime
  *      security:
  *          - Bearer: []
  *      parameters:
- *          - in: path
- *            name: name
+ *          - in: body
+ *            name: Anime
  *            schema:
- *              type: string
- *            required: true
+ *              type: object
+ *              required:
+ *                 - name
+ *              properties:
+ *                 name:
+ *                   type: string
  *      responses:
  *         '200':
  *           description: Successfull Request
@@ -200,9 +204,9 @@ router.get('/watched', verify, async (req, res) => {
  *         '500':
  *           description: Internal servor error
  */
-router.get('/:name', verify, async (req, res) => {
-    if (!req.params.name) return res.status(400).send("Missing anime name.");
-    await getAnimeByName(req.params.name).then(async anime => {
+router.post('/name', verify, async (req, res) => {
+    if (!req.body.name) return res.status(400).send("Missing anime name.");
+    await getAnimeByName(req.body.name).then(async anime => {
         if (!anime) {
             res.status(404).send("Anime not found.")
         } else {
@@ -261,8 +265,8 @@ router.get('/:name', verify, async (req, res) => {
 
 /**
  * @swagger
- * /anime/{name}/{episode}:
- *   get:
+ * /anime/episode/{episode}:
+ *   post:
  *      description: Use to get all information about an anime episode
  *      tags:
  *          - Anime
@@ -270,15 +274,19 @@ router.get('/:name', verify, async (req, res) => {
  *          - Bearer: []
  *      parameters:
  *          - in: path
- *            name: name
- *            schema:
- *              type: string
- *            required: true
- *          - in: path
  *            name: episode
  *            schema:
  *              type: integer
  *            required: true
+ *          - in: body
+ *            name: Anime
+ *            schema:
+ *              type: object
+ *              required:
+ *                 - name
+ *              properties:
+ *                 name:
+ *                   type: string
  *      responses:
  *         '200':
  *           description: Successfull Request
@@ -291,13 +299,13 @@ router.get('/:name', verify, async (req, res) => {
  *         '500':
  *           description: Internal servor error
  */
-router.get('/:name/:episode', verify, async (req, res) => {
-    if (!req.params.name) return res.status(400).send("Missing anime name.");
+router.post('/episode/:episode', verify, async (req, res) => {
+    if (!req.body.name) return res.status(400).send("Missing anime name.");
     if (!req.params.episode) return res.status(400).send("Missing anime episode.");
     if (isNaN(req.params.episode)) return res.status(415).send("Episode must be type of integer.");
     if (req.params.episode <= 0) return res.status(415).send("Episode must be superior to 0.");
     try{
-        await getEpisodeInfos(req.params.name, parseInt(req.params.episode)-1).then(async episode => {
+        await getEpisodeInfos(req.body.name, parseInt(req.params.episode)-1).then(async episode => {
             if (!episode) {
                 res.status(404).send("Episode not found.")
             } else {
@@ -306,7 +314,7 @@ router.get('/:name/:episode', verify, async (req, res) => {
                 const user = await User.findOne({_id: mongoose.Types.ObjectId(req.user._id)})
                 let anime, index;
                 for (let i = 0; i < user.watchedAnimes.length; i++) {
-                    if (user.watchedAnimes[i].name === req.params.name){
+                    if (user.watchedAnimes[i].name === req.body.name){
                         anime = user.watchedAnimes[i];
                         index = i;
                     }
