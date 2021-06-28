@@ -20,7 +20,12 @@ It's based on GogoAnime API and it's not an hosting solution for anime files.
 ![image](https://user-images.githubusercontent.com/64975829/123676584-6ba0ad00-d844-11eb-928e-83bb9eff8dab.png)
 
 ## Watched Anime Page
-![image](https://user-images.githubusercontent.com/64975829/123676325-149ad800-d844-11eb-9d3e-b193aabff86a.png)
+![image](https://user-images.githubusercontent.com/64975829/123676665-870bb800-d844-11eb-88d5-be383aed7dc8.png)
+
+## User Information Page
+![image](https://user-images.githubusercontent.com/64975829/123676729-9d197880-d844-11eb-9de2-83d85122adac.png)
+
+
 
 
 ## Back-end
