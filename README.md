@@ -47,7 +47,7 @@ Using Node JS to make an express REST API.
 The API is documented using Open API Swagger 3.  
 MongoDB is the database we are using to store data of our application.
 
-# Setup
+## Setup
 
 At the root of the server folder, you need to do :
 
@@ -84,6 +84,46 @@ nodemon app.js
 Using Javascript and React JS.  
 We are currently using the style framwork Ant Design.
 
+## Setup
+
+At the root of the client folder, you need to do :
+
+```bash
+npm i
+```
+
+Then to configure the clienbt you need to create a file inside the "src" folder, called "config.js",
+and put the following code inside, with your custom configuration :
+
+```js
+const IP = "Your client IP here with port 3000 (https://11.11.111.11:3000/)"
+const ApiIP = "Your server IP here with port 5000  (https://11.11.111.11:5000/api)"
+const DNS = "Your client DNS if hosted with on a server with a DNS"
+module.exports = {
+    IP,
+    ApiIP,
+    DNS
+}
+```
+You need to change in the code wherever the variable DNS is, by the variale ApiIP, if you are not using a DNS service.
 
 
+Inside the "src/Functions"", you need to create a file called "config.js" and put the following code inside, using a custom salt key :
 
+```js
+const SALT_HASH = "Your salt Key";
+
+module.exports = {
+    SALT_HASH
+}
+```
+
+
+Then start the server with :
+```bash
+npm start
+```
+Or build the server using (then serve it with the command inside the CLI) :
+```bash
+npm run build
+```
