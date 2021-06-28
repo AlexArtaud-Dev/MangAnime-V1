@@ -82,7 +82,7 @@ nodemon app.js
 # Front-end
 
 Using Javascript and React JS.  
-We are currently using the style framwork Ant Design.
+We are currently using the style framework Ant Design.
 
 ## Setup
 
