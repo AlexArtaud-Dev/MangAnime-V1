@@ -127,3 +127,7 @@ Or build the server using (then serve it with the command inside the CLI) :
 ```bash
 npm run build
 ```
+
+# Licence
+
+MangAnime is distributed under the MIT License.
