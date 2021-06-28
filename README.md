@@ -3,23 +3,23 @@ MangAnime is a website to stream and download various animes videos.
 It's based on GogoAnime API and it's not an hosting solution for anime files.
 
 
-## Preview (more will be added)
-# Home Page
+# Preview (more will be added)
+## Home Page
 ![image](https://user-images.githubusercontent.com/64975829/123013734-0d4b7880-d3c5-11eb-8676-5144abf6da0d.png)
 
-# Login Page
+## Login Page
 ![image](https://user-images.githubusercontent.com/64975829/123013899-61eef380-d3c5-11eb-886a-e053fbd8bd18.png)
 
-# Register Page
+## Register Page
 ![image](https://user-images.githubusercontent.com/64975829/123014094-c5792100-d3c5-11eb-9a72-6e6a0b4c1616.png)
 
-# Trending Anime Page
+## Trending Anime Page
 ![image](https://user-images.githubusercontent.com/64975829/123675939-92121880-d843-11eb-8453-7b7219655599.png)
 
-# Search Anime Page
+## Search Anime Page
 ![image](https://user-images.githubusercontent.com/64975829/123676107-cc7bb580-d843-11eb-8883-d7eedc4df120.png)
 
-# Watched Anime Page
+## Watched Anime Page
 ![image](https://user-images.githubusercontent.com/64975829/123676325-149ad800-d844-11eb-9d3e-b193aabff86a.png)
 
 
