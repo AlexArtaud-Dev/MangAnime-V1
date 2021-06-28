@@ -8,7 +8,7 @@ module.exports = function(keyAPI) {
     const agent = new https.Agent({
         rejectUnauthorized: false
     })
-    return axios.get(`https://localhost:5000/api/key/${keyAPI}`, {
+    return axios.get(`https://13.88.205.82:5000/api/key/${keyAPI}`, {
             httpsAgent: agent,
             headers: {
                 'admin-token': `${process.env.ADMIN_TOKEN_SCIPHERED}`
