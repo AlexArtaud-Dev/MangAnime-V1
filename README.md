@@ -1,6 +1,7 @@
 # MangAnime
 MangAnime is a website to stream and download various animes videos.  
 It's based on GogoAnime API and it's not an hosting solution for anime files.
+Online version : https://www.manganimes.me/ (Updated each time there is a new release)
 
 
 # Preview (more will be added)
