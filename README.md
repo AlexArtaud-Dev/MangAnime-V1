@@ -95,12 +95,12 @@ At the root of the client folder, you need to do :
 npm i
 ```
 
-Then to configure the clienbt you need to create a file inside the "src" folder, called "config.js",
+Then to configure the client you need to create a file inside the "src" folder, called "config.js",
 and put the following code inside, with your custom configuration :
 
 ```js
-const IP = "Your client IP here with port 3000 (https://11.11.111.11:3000/)"
-const ApiIP = "Your server IP here with port 5000  (https://11.11.111.11:5000/api)"
+const IP = "Your client IP here with port 3000 (e.q: https://11.11.111.11:3000/)"
+const ApiIP = "Your server IP here with port 5000  (e.q: https://11.11.111.11:5000/api)"
 const DNS = "Your client DNS if hosted with on a server with a DNS"
 module.exports = {
     IP,
