@@ -41,13 +41,45 @@ It's based on GogoAnime API and it's not an hosting solution for anime files.
 ![image](https://user-images.githubusercontent.com/64975829/123677332-45c7d800-d845-11eb-84be-3167f75fff2f.png)
 
 
-## Back-end
+# Back-end
 
 Using Node JS to make an express REST API.  
 The API is documented using Open API Swagger 3.  
 MongoDB is the database we are using to store data of our application.
 
-## Front-end
+# Setup
+
+At the root of the server folder, you need to do :
+
+```bash
+npm i
+```
+
+Then to configure the server you need to create a file at the root of the server folder, called ".env",
+and put the following code inside, with your custom configuration :
+
+```js
+DB_CONNECTION = Replace by your mongoose cluster connection link
+TOKEN_SECRET = Any token that you want (more than 16 random characters if possible)
+ADMIN_TOKEN = Any token that you want (more than 16 random characters if possible)
+ADMIN_TOKEN_SCIPHERED = The same token as ADMIN_TOKEN but sciphered to secure it
+OWNER_SECRET_PASS = Any pass that you want (more than 16 random characters if possible)
+```
+
+Then start the server with 
+```bash
+npm start
+```
+OR
+```bash
+node app.js
+```
+OR
+```bash
+nodemon app.js
+```
+
+# Front-end
 
 Using Javascript and React JS.  
 We are currently using the style framwork Ant Design.
