@@ -25,7 +25,20 @@ It's based on GogoAnime API and it's not an hosting solution for anime files.
 ## User Information Page
 ![image](https://user-images.githubusercontent.com/64975829/123676729-9d197880-d844-11eb-9de2-83d85122adac.png)
 
+## QR Code Login (Working but will only be available when mobile app will be live)
+![image](https://user-images.githubusercontent.com/64975829/123676875-bfab9180-d844-11eb-9a3a-b56c6fa6c56b.png)
 
+## Admin User Management Page
+![image](https://user-images.githubusercontent.com/64975829/123677048-f1245d00-d844-11eb-9bc4-09fe34df51db.png)
+
+## Admin Key Generation Page
+![image](https://user-images.githubusercontent.com/64975829/123677159-144f0c80-d845-11eb-98a6-9803be543305.png)
+
+## Admin Key Management Page
+![image](https://user-images.githubusercontent.com/64975829/123677278-33e63500-d845-11eb-88a4-9cba3f17e3d1.png)
+
+## Back-end server informations page
+![image](https://user-images.githubusercontent.com/64975829/123677332-45c7d800-d845-11eb-84be-3167f75fff2f.png)
 
 
 ## Back-end
