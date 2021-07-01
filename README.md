@@ -1,3 +1,7 @@
+# DEPRECATED FOR NOW DUE TO A CLOUDFLARE ISSUE  
+
+
+
 # MangAnime
 MangAnime is a website to stream and download various animes videos.  
 It's based on GogoAnime API and it's not an hosting solution for anime files.  
