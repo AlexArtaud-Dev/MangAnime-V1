@@ -1,4 +1,4 @@
-# DEPRECATED FOR NOW DUE TO A CLOUDFLARE ISSUE  
+# Need Optimization due to new cloudflare bypass  
 
 
 
