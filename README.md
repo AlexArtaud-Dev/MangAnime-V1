@@ -112,7 +112,7 @@ module.exports = {
     DNS
 }
 ```
-You need to change in the code wherever the variable DNS is, by the variale ApiIP, if you are not using a DNS service.
+You need to change in the code wherever the variable DNS is, by the variable ApiIP, if you are not using a DNS service.
 
 
 Inside the "src/Functions"", you need to create a file called "config.js" and put the following code inside, using a custom salt key :
