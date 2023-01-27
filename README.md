@@ -1,3 +1,5 @@
+# THIS APPLICATION IS DEPRECATED AND WILL RECEIVE A NEW VERSION DURING SUMMER 2023
+
 # Need Optimization due to new cloudflare bypass  
 
 
